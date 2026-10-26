@@ -1,0 +1,152 @@
+[
+  {
+    "question": "What is the interest rate on HDFC personal loan?",
+    "keywords": ["interest", "rate", "personal", "loan", "byaj"],
+    "answer": "HDFC Personal Loan interest rate starts at 10.50% p.a. and varies based on CIBIL score, income, and employer category. Pre-approved customers get preferential rates.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What documents are required for a personal loan?",
+    "keywords": ["documents", "required", "personal", "loan", "kya", "chahiye", "needed"],
+    "answer": "PAN card, Aadhaar (KYC), last 3 months' salary slips, last 6 months' bank statement, and Form 16 or latest ITR. Self-employed need 2 years ITR + GST returns.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is the processing fee for a personal loan?",
+    "keywords": ["processing", "fee", "fees", "charges", "personal", "loan"],
+    "answer": "Processing fee is up to 2.50% of the loan amount, with a minimum of Rs. 1,999 and capped at Rs. 25,000 plus applicable GST. Pre-approved customers may get fee waivers.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is the maximum personal loan amount?",
+    "keywords": ["maximum", "max", "amount", "personal", "loan", "limit"],
+    "answer": "Personal loan amount ranges from Rs. 50,000 up to Rs. 40 lakh, subject to eligibility based on income, CIBIL score, and employer category.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is the personal loan tenure?",
+    "keywords": ["tenure", "duration", "period", "years", "personal", "loan", "saal"],
+    "answer": "Personal loan tenure is flexible from 12 months to 72 months (6 years). Longer tenure means lower EMI but higher total interest paid.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "How is EMI calculated on a personal loan?",
+    "keywords": ["emi", "calculated", "calculation", "kitni", "hogi", "monthly"],
+    "answer": "EMI depends on loan amount, interest rate, and tenure. Example: Rs. 5 lakh at 11% for 5 years = approx Rs. 10,871 per month. Use the HDFC EMI calculator for an exact figure.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What are the eligibility criteria for a personal loan?",
+    "keywords": ["eligibility", "criteria", "qualify", "personal", "loan"],
+    "answer": "Salaried: age 21-60, minimum monthly income Rs. 25,000 (metro) / Rs. 20,000 (non-metro), minimum 2 years' work experience. Self-employed: age 25-65, business vintage 4+ years, profitable ITRs.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "Is there a prepayment or foreclosure charge?",
+    "keywords": ["prepayment", "foreclosure", "preclosure", "charge", "charges", "part", "payment"],
+    "answer": "Part-prepayment allowed after 12 EMIs at up to 4% on the principal prepaid. Full foreclosure also attracts 2-4% on outstanding principal plus GST. Charges depend on tenure completed.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is the minimum CIBIL score required for a personal loan?",
+    "keywords": ["cibil", "score", "credit", "minimum", "required"],
+    "answer": "Minimum CIBIL score of 700 is recommended. Score of 750+ gets the best interest rates. Below 700, the loan may still be approved but at a higher rate.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "How long does personal loan approval take?",
+    "keywords": ["approval", "time", "long", "fast", "quick", "instant", "disbursal", "kab", "milega"],
+    "answer": "For pre-approved customers, disbursal is in 10 seconds via NetBanking. For new customers, typical approval is 1-4 working days after document submission.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is the interest rate on HDFC business loan?",
+    "keywords": ["interest", "rate", "business", "loan"],
+    "answer": "HDFC Business Loan interest rate starts at 10.75% p.a. and goes up to 22.50% depending on business vintage, turnover, CIBIL, and loan amount.",
+    "sources": ["HDFC_Business_Loan.pdf"]
+  },
+  {
+    "question": "What is the maximum business loan amount?",
+    "keywords": ["maximum", "max", "amount", "business", "loan", "limit"],
+    "answer": "Business loan amount is up to Rs. 75 lakh (collateral-free) for SMEs. Higher amounts require collateral. Loan tenure is up to 48 months.",
+    "sources": ["HDFC_Business_Loan.pdf"]
+  },
+  {
+    "question": "What documents are required for a business loan?",
+    "keywords": ["documents", "required", "business", "loan", "needed"],
+    "answer": "PAN, Aadhaar, business proof (GST cert/Shop Act), last 2 years ITR with computation, last 1 year bank statements, balance sheet & P&L. Business vintage of 3+ years required.",
+    "sources": ["HDFC_Business_Loan.pdf"]
+  },
+  {
+    "question": "Is collateral required for HDFC business loan?",
+    "keywords": ["collateral", "security", "mortgage", "business", "loan"],
+    "answer": "No, business loans up to Rs. 75 lakh are collateral-free for eligible SMEs. For higher amounts or under specific schemes, property collateral may be required.",
+    "sources": ["HDFC_Business_Loan.pdf"]
+  },
+  {
+    "question": "What is the eligibility for a business loan?",
+    "keywords": ["eligibility", "criteria", "business", "loan", "qualify"],
+    "answer": "Self-employed professionals or proprietors aged 21-65 with business vintage of 3+ years, minimum annual turnover Rs. 40 lakh, and profitable ITR for the last 2 years.",
+    "sources": ["HDFC_Business_Loan.pdf"]
+  },
+  {
+    "question": "What is the difference between personal loan and business loan?",
+    "keywords": ["difference", "compare", "comparison", "personal", "business", "loan", "vs"],
+    "answer": "Personal Loan: salaried/professionals, up to Rs. 40 lakh, end-use unrestricted. Business Loan: self-employed/businesses, up to Rs. 75 lakh, end-use must be business-related, requires business vintage & ITR.",
+    "sources": ["HDFC_Loan_Comparison.pdf"]
+  },
+  {
+    "question": "Why is your interest rate so high?",
+    "keywords": ["high", "expensive", "rate", "byaj", "mahenga", "zyada"],
+    "answer": "Our rate reflects your CIBIL profile, income, and tenure. For pre-approved customers and 750+ CIBIL we offer rates as low as 10.50%. Let me check if you qualify for a better slab.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "I already have a loan with another bank",
+    "keywords": ["already", "existing", "other", "bank", "sbi", "icici", "bajaj"],
+    "answer": "We can offer a balance transfer at a lower rate plus a top-up if your repayment record is clean. Existing EMI obligation is factored into your eligibility (FOIR).",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "Can I get a pre-approved offer?",
+    "keywords": ["pre-approved", "preapproved", "offer", "instant"],
+    "answer": "Yes — log into HDFC NetBanking or the MyApps app to check your pre-approved offers. Pre-approved customers get instant disbursal and waived processing fees.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is foreclosure?",
+    "keywords": ["foreclosure", "preclosure", "close", "early", "kya", "hai"],
+    "answer": "Foreclosure means closing the loan before its scheduled end date by paying the full outstanding principal. Charges apply (2-4%) depending on completed tenure.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What is NACH mandate?",
+    "keywords": ["nach", "mandate", "auto", "debit", "ecs"],
+    "answer": "NACH (National Automated Clearing House) mandate authorizes HDFC to auto-debit your EMI from your bank account on the due date. It is mandatory and set up during disbursal.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "What if my EMI bounces?",
+    "keywords": ["bounce", "bounced", "cheque", "charge", "miss", "late", "emi", "payment", "default"],
+    "answer": "EMI bounce attracts a cheque bounce charge (typically Rs. 550 + GST) plus 2% per month penal interest on the overdue amount. Repeated bounces hurt CIBIL.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "Can I apply if I have low CIBIL score?",
+    "keywords": ["low", "bad", "poor", "cibil", "score", "credit"],
+    "answer": "With CIBIL below 700, loan approval is harder and the rate will be higher. Adding a co-applicant with a strong CIBIL or pledging FD collateral improves chances.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  },
+  {
+    "question": "Do you offer loan against property?",
+    "keywords": ["loan", "against", "property", "lap", "mortgage"],
+    "answer": "Yes, HDFC Loan Against Property (LAP) is available up to Rs. 10 crore against residential or commercial property. Tenure up to 15 years, rates start at 9.50% p.a.",
+    "sources": ["HDFC_LAP.pdf"]
+  },
+  {
+    "question": "How can I check my loan application status?",
+    "keywords": ["status", "application", "check", "track", "pending"],
+    "answer": "Track your application via HDFC NetBanking, the MyApps mobile app, or by calling 1800-202-6161 with your application reference number.",
+    "sources": ["HDFC_Personal_Loan.pdf"]
+  }
+]

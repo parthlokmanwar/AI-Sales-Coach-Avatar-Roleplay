@@ -1,0 +1,1345 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap');
+
+/* ============================================================================
+   PitchFlow AI — "Liquid Glass" theme
+   ----------------------------------------------------------------------------
+   An iOS-style glass system applied app-wide: a fixed wallpaper behind
+   everything, translucent blurred sheets for every surface, light type, navy
+   chrome, HDFC red as the single action colour.
+
+   Loaded AFTER index.css (see main.jsx) as a single override layer, so the
+   original glassmorphism theme stays intact underneath. To revert the whole
+   redesign: remove the one import line in main.jsx.
+
+   The approach is token-first — index.css already routes ~74 rules through
+   var(--glass-*) and the colour tokens, so flipping the tokens converts most
+   components at once. Per-component rules below are only for surfaces that
+   hardcode their own colours and therefore ignore the tokens.
+
+   Component stylesheets (RolePlay.css, Login.css, …) are injected after this
+   file by Vite, so rules that must beat them are prefixed `html` or use
+   `!important` — only where measured to be necessary, not by default.
+   ============================================================================ */
+
+:root {
+  /* ── Typography ─────────────────────────────────────────────────────────
+     Montserrat, with a deliberate fallback tail. Montserrat only ships Latin,
+     Latin-Ext and Cyrillic — it has no Devanagari, Tamil, Bengali or Telugu,
+     and this app renders all of them. Browsers fall back per *glyph*, not per
+     element, so the Indic faces below pick up exactly the characters
+     Montserrat is missing while Latin text stays Montserrat. Removing them
+     would drop Hindi and Tamil to whatever the OS picks, which is usually a
+     serif that clashes badly. */
+  --font-sans: 'Montserrat', 'Nirmala UI', 'Noto Sans', 'Noto Sans Devanagari',
+               -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ── Canvas ─────────────────────────────────────────────────────────────
+     The wallpaper lives on <body>; these stay as the fallback underneath it. */
+  --bg-base:           #0B1220;
+  --color-bg:          #0B1220;
+
+  --orb-1: transparent; --orb-2: transparent;
+  --orb-3: transparent; --orb-4: transparent;
+
+  /* ── Glass sheets ───────────────────────────────────────────────────────
+     Apple's material is a blurred+saturated sample of the backdrop, a thin
+     white sheet on top, and a specular rim. These three tokens are the sheet;
+     the blur and rim live on the rules below. */
+  --glass-bg:          rgba(255, 255, 255, 0.10);
+  --glass-bg-strong:   rgba(255, 255, 255, 0.14);
+  --glass-bg-faint:    rgba(255, 255, 255, 0.06);
+  --glass-border:      rgba(255, 255, 255, 0.18);
+  --glass-border-soft: rgba(255, 255, 255, 0.12);
+  --glass-blur:        24px;
+
+  --color-card:        rgba(255, 255, 255, 0.10);
+  --color-border:      rgba(255, 255, 255, 0.18);
+  --color-border-soft: rgba(255, 255, 255, 0.11);
+
+  /* ── Type tiers ─────────────────────────────────────────────────────────
+     Set for the worst case behind the glass — the wallpaper's brightest
+     region under the scrim, where a 10% sheet lands near #63384F. Apple's own
+     secondary/tertiary tiers (60%/30%) would fail there. */
+  --color-text:        #FFFFFF;
+  --color-text-muted:  rgba(255, 255, 255, 0.94);
+  --color-text-faint:  rgba(255, 255, 255, 0.82);
+
+  --color-success:     #34D399;
+  --color-success-tint:rgba(52, 211, 153, 0.16);
+  --color-warning:     #FBBF24;
+  --color-warning-tint:rgba(251, 191, 36, 0.16);
+  --color-error:       #FB7185;
+  --color-error-tint:  rgba(251, 113, 133, 0.16);
+
+  /* ── Radii — iOS continuous corners run larger than the old theme ─────── */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+
+  /* ── Shadows: depth comes from the drop, definition from the inset rim ── */
+  --shadow-xs: 0 1px 2px rgba(4, 10, 22, 0.20);
+  --shadow-sm: 0 2px 8px rgba(4, 10, 22, 0.24);
+  --shadow-md: 0 6px 20px rgba(4, 10, 22, 0.28);
+  --shadow-lg: 0 12px 40px rgba(4, 10, 22, 0.38);
+  --shadow-glow-red:  0 6px 20px rgba(227, 24, 55, 0.34);
+  --shadow-glow-navy: 0 6px 20px rgba(4, 10, 22, 0.34);
+  --shadow-focus-red:  0 0 0 3px rgba(227, 24, 55, 0.40);
+  --shadow-focus-navy: 0 0 0 3px rgba(255, 255, 255, 0.28);
+
+  /* 252, not 232: "RolePlay Simulation" is 143px in Montserrat at 14px, and
+     with the icon, gap and pill padding it needs 198px of rail to stay on one
+     line. At 232 it wrapped to two. */
+  --sidebar-w: 252px;
+
+  /* RolePlay.css reads local `--text` / `--border` names with dark fallbacks
+     baked in (`var(--text, #1a1a2e)`). They were never defined, so every one
+     of them resolved to the dark fallback. Defining them here fixes the whole
+     file at once instead of chasing ~30 individual rules. */
+  --text:               #FFFFFF;
+  --text-muted:         rgba(255, 255, 255, 0.94);
+  --bg:                 transparent;
+  --border:             rgba(255, 255, 255, 0.18);
+  --primary:            var(--color-red);
+  --color-bg-secondary: rgba(255, 255, 255, 0.10);
+  --color-text-secondary: rgba(255, 255, 255, 0.94);
+
+  /* Reusable rim highlight — the top-edge specular that sells the material */
+  --glass-rim: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/* ============================================================================
+   THE BACKDROP — one fixed wallpaper behind the entire app
+   ============================================================================ */
+
+/* The old animated gradient mesh is replaced by the wallpaper */
+html body::after { content: none !important; display: none !important; }
+
+html body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  /* Swap to /dashboard-bg.jpg for the indigo circuit wallpaper — that one is
+     lighter, so it needs a heavier wash, around 0.58/0.48. The scrim here runs
+     heavier towards the bottom because the cyan grid down there is the
+     brightest thing in the frame. Values checked by sampling the image: its
+     brightest pixel is the magenta glow at rgb(131,42,135), 53% down. */
+  background-image:
+    linear-gradient(rgba(10, 22, 40, 0.12), rgba(10, 22, 40, 0.32)),
+    url('/dashboard-bg-2.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: none;
+  animation: none;
+  transform: none;
+}
+
+html, body, #root {
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+html body { background: var(--bg-base); }
+
+/* Three surfaces hardcode 'Inter' instead of reading the token — the sign-in
+   page, the product-tour popovers, and the marketing landing page. */
+html .pvl-root,
+html .driver-popover.pv-tour,
+html .pvh-root { font-family: var(--font-sans); }
+
+/* ── Product tour (driver.js) ───────────────────────────────────────────────
+   index.css styles the footer as `.pv-tour .driver-popover-footer button`
+   (0,3,1), which OUT-SPECIFIES its own `.driver-popover-next-btn` rule (0,3,0)
+   — so every button, Next included, took the near-white footer background. The
+   glass palette then lifts --color-text to white, and the labels vanished.
+   Repaint the whole popover with selectors that beat both, and give Next the
+   brand red so the primary action matches the rest of the app. */
+html .driver-popover.pv-tour {
+  background: rgba(10, 18, 36, 0.97);
+  border-color: var(--glass-border);
+  color: #FFFFFF;
+}
+html .driver-popover.pv-tour .driver-popover-title { color: #FFFFFF; }
+html .driver-popover.pv-tour .driver-popover-description { color: rgba(255, 255, 255, 0.92); }
+html .driver-popover.pv-tour .driver-popover-progress-text { color: rgba(255, 255, 255, 0.74); }
+
+html .driver-popover.pv-tour .driver-popover-footer button {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #FFFFFF;
+}
+html .driver-popover.pv-tour .driver-popover-footer button:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+/* "Back" on step 1 — must read as unavailable without becoming invisible. */
+html .driver-popover.pv-tour .driver-popover-footer button:disabled,
+html .driver-popover.pv-tour .driver-popover-footer button.driver-popover-btn-disabled {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.50);
+  cursor: default;
+  transform: none;
+}
+html .driver-popover.pv-tour .driver-popover-footer button.driver-popover-next-btn {
+  background: var(--color-red);
+  border-color: transparent;
+  color: #FFFFFF;
+}
+html .driver-popover.pv-tour .driver-popover-footer button.driver-popover-next-btn:hover {
+  background: var(--color-red-hover, #C2142E);
+  color: #FFFFFF;
+}
+html .driver-popover.pv-tour .driver-popover-close-btn { color: rgba(255, 255, 255, 0.72); }
+html .driver-popover.pv-tour .driver-popover-close-btn:hover { color: #FF8095; }
+
+/* The arrow was a near-white spike pointing at a now-dark sheet. */
+html .driver-popover.pv-tour .driver-popover-arrow-side-left   { border-left-color:   rgba(10, 18, 36, 0.97); }
+html .driver-popover.pv-tour .driver-popover-arrow-side-right  { border-right-color:  rgba(10, 18, 36, 0.97); }
+html .driver-popover.pv-tour .driver-popover-arrow-side-top    { border-top-color:    rgba(10, 18, 36, 0.97); }
+html .driver-popover.pv-tour .driver-popover-arrow-side-bottom { border-bottom-color: rgba(10, 18, 36, 0.97); }
+
+@media (max-width: 640px) {
+  /* 320px overflows a 360px phone once margins are counted; and the nav
+     buttons are tap targets, so they get the 44px minimum. */
+  html .driver-popover.pv-tour {
+    max-width: min(320px, calc(100vw - 32px));
+    padding: 16px;
+  }
+  html .driver-popover.pv-tour .driver-popover-footer button {
+    min-height: 44px;
+    padding: 10px 18px;
+  }
+}
+
+/* Montserrat is a geometric face with wide, round letterforms; at the same
+   optical size it reads larger and looser than Inter. Pulling the tracking in
+   on headings keeps them from sprawling. */
+html .page-title,
+html .home-title,
+html .conv-name,
+html .pvl-h { letter-spacing: -0.03em; }
+
+/* ============================================================================
+   CHROME — navy topbar and rail, opaque so the nav never competes with content
+   ============================================================================ */
+
+html .topbar {
+  background: rgba(10, 22, 40, 0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* ── Co-brand lockup ────────────────────────────────────────────────────────
+   `.topbar-brand` is pinned to `var(--sidebar-w)` in index.css so the product
+   name lines up with the rail below it. Adding a second logo inside that fixed
+   box would squash it, so the brand block goes auto-width here and the rail
+   alignment is given up deliberately — a co-brand lockup reads worse broken
+   across a hard edge than it does slightly out of column. */
+html .topbar-brand { width: auto; gap: 14px; }
+
+/* A slogan, not a descriptor. Another geometric sans just looked like a second
+   UI label; the contrast has to come from a different *kind* of letterform.
+   Playfair Display italic is a high-contrast serif — against the flat geometry
+   of Montserrat above it, it reads as someone's line rather than a field in the
+   header. Italic and a hair larger than the wordmark's supporting text, so it
+   carries without competing. */
+html .topbar-subtitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  /* 12.5px. High-contrast serifs lose their hairlines when they get small, so
+     the weight goes up to 600 and the tracking opens slightly to keep the line
+     crisp at this size. */
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.86);
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+/* No chip. The wrappers stay as bare containers so both marks sit directly on
+   the navy — a white tile read as a sticker, and a glass one still read as a
+   panel behind a logo. */
+html .topbar-logo-chip,
+html .topbar-cobrand-chip {
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  height: auto;
+  width: auto;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Without a light ground the chevron's indigo half and HDFC's navy block sit
+   dark-on-dark, so brightness and saturation are lifted to put the contrast
+   back, and a drop-shadow keeps the edges crisp against the bar. */
+/* 46px. Since the PNG is now cropped tight to the artwork, this is the mark's
+   true visible height — it sits just above the two-line wordmark block beside
+   it, which is the balance the bar wants. */
+html .topbar-logo-img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
+  /* This artwork already carries its own glow, so the heavy brightness lift the
+     flat version needed would blow out the lime end. Only a light touch here. */
+  filter: brightness(1.06) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+html .topbar-cobrand {
+  height: 24px;
+  width: auto;
+  display: block;
+  border-radius: 3px;
+  filter: brightness(1.12) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.40));
+}
+html .topbar-cobrand-rule {
+  width: 1px;
+  height: 30px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.20);
+}
+html .topbar-logo {
+  background: var(--color-red);
+  background-size: auto;
+  animation: none;
+  box-shadow: var(--glass-rim);
+  border-radius: 10px;
+}
+html .topbar-logo::after { content: none; }
+
+html .sidebar {
+  background: rgba(16, 28, 48, 0.72);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+html .sidebar-section-label { color: rgba(255, 255, 255, 0.62); }
+
+/* Nav items are the same object as the account chip in the top-right corner:
+   a translucent pill, hairline rim, blurred backdrop. Same material, same
+   radius, so the chrome reads as one system. */
+html .nav-item {
+  color: rgba(255, 255, 255, 0.92);
+  /* background-color, not the shorthand — the glaze gradient is applied as a
+     background-image further down, and a shorthand here would wipe it. */
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: none;
+}
+html .nav-item .nav-item-icon { color: rgba(255, 255, 255, 0.76); }
+html .nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  transform: none;
+}
+
+/* Active is the same pill, brighter, with the specular rim and a red icon.
+   The left bar is dropped on desktop — a square bar against a pill edge reads
+   as a mistake. `.nav-item::before` is a full-cover `inset: 0` layer in
+   index.css and must stay hidden or it paints over the label. */
+/* `background-image` is set explicitly, not left to the glaze rule below.
+   index.css paints `.nav-item.active` with a solid red gradient in its
+   641–900px block at (0,2,0) — a `background-color` override alone leaves that
+   gradient on top, which turned the active tab into a full red pill on tablet
+   widths. Matching the specificity and clearing the image fixes every width. */
+html .nav-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.00) 100%);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: var(--glass-rim);
+}
+html .nav-item.active .nav-item-icon { color: #FF8095; }
+html .nav-item.active::before { opacity: 0; }
+html .nav-item.active::after { display: none; }
+html .nav-item-count {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.96);
+}
+html .nav-item.active .nav-item-count {
+  background: var(--color-red);
+  color: #FFFFFF;
+}
+
+/* ============================================================================
+   SPACING — glass needs more air than paper did
+   Translucent sheets have soft edges, so panels sitting close together read as
+   one blurred mass. Everything gets pushed apart a step.
+   ============================================================================ */
+
+html .main { padding: 40px 36px 72px; }
+html .main-inner { gap: 38px; }
+html .page-header { margin-bottom: 20px; }
+
+html .card-padded { padding: 34px; }
+html .card-body   { padding: 34px; }
+html .card-header { padding: 22px 34px; }
+
+html .sidebar { padding: 26px 14px 22px; gap: 6px; }
+html .nav-item { margin-bottom: 10px; padding: 13px 14px; }
+html .sidebar-section-label { padding: 8px 16px 16px; }
+/* Nav labels never wrap — a two-line tab breaks the pill rhythm */
+html .nav-item-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+html .home-glance { gap: 10px 36px; padding: 16px 2px 20px; margin-bottom: 26px; }
+html .home-resume { padding: 18px 20px; margin-bottom: 32px; }
+html .home-shortcuts { gap: 16px; }
+html .home-shortcut { padding: 18px; gap: 14px; }
+html .home-cols { gap: 28px; }
+html .home-activity { padding: 15px 18px; }
+html .home-practice { padding: 22px; gap: 16px; }
+html .home-section-label { margin-bottom: 14px; }
+
+html .chat-messages { gap: 18px; padding: 24px; }
+
+/* ============================================================================
+   SURFACES — every card becomes a glass sheet
+   ============================================================================ */
+
+/* A flat translucent fill reads as a film laid over the page. Real glass has a
+   gradient across it — brighter where it catches light at the top edge, falling
+   away towards the bottom — plus a darker inner shadow along the lower edge
+   where the sheet has thickness. That's what the second and third layers do. */
+html .card,
+html .home-card,
+html .home-shortcut,
+html .home-resume,
+html .pitch-section,
+html .lc-acc-item,
+html .history-list,
+html .history-card,
+html .doc-card,
+html .chat-container,
+html .rag-stage-card,
+html .mode-card,
+html .rp-preset-card,
+html .rp-card {
+  /* Flat, single colour — no gradient, no white overlay. Any gradient across a
+     panel this large shows as a diagonal shade: the lighter stop lets more
+     wallpaper through at one corner than the other, and on a full-width card
+     that reads as a grey wash rather than as depth. Home tiles never showed it
+     because they are small; the Pitch Generator card is nearly full-viewport.
+     Edge definition comes from the border and the drop shadow instead. */
+  background: rgba(11, 18, 38, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-xl);
+  /* saturate() is dropped. It was amplifying whatever the wallpaper was doing
+     behind the panel — the bright wireframe ridge came through as a pale
+     diagonal wash no matter how far the tint was raised. The blur stays, so
+     panel edges still refract the backdrop; the surface itself does not. */
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow:
+    var(--glass-rim),
+    inset 0 -1px 0 rgba(4, 10, 22, 0.22),
+    var(--shadow-md);
+}
+html .card:hover,
+html .home-shortcut:hover,
+html .home-resume:hover,
+html .pitch-section:hover,
+html .history-row:hover,
+html .doc-card:hover { transform: none; }
+
+html .home-shortcut:hover,
+html .home-resume:hover {
+  background: var(--glass-bg-strong);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Nested surfaces must not stack material on material — it turns to mud */
+html .card .card-header,
+html .card .card-body,
+html .home-card .home-activity,
+html .history-list .history-row {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* THE diagonal wash. `.card::before` is a full-cover `inset: 0` overlay
+   painting `linear-gradient(135deg, rgba(255,255,255,0.6) 0%, transparent 40%)`
+   at 0.55 opacity — a 60% white sheet across the top-left corner, sitting on
+   top of every repaint made to `.card` itself. It is why the Pitch Generator
+   card kept washing out while Home stayed clean: `.home-card`, `.home-shortcut`
+   and `.home-resume` are not `.card`, so they never had this overlay. */
+html .card::before { content: none; }
+
+/* Transparent, not a white wash — a 5% white fill across a full-width header
+   is exactly the pale band that kept reading as "white shade". The divider
+   line alone separates it from the body. */
+html .card-header {
+  background: transparent;
+  border-bottom-color: var(--glass-border-soft);
+}
+
+/* Solid title — the gradient text-clip reads as decoration, not hierarchy */
+html .page-title,
+html .home-title {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #FFFFFF;
+  color: #FFFFFF;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+html .page-subtitle, html .home-sub { color: var(--color-text-muted); }
+
+/* Text sitting directly on the wallpaper has no sheet between it and the
+   wireframe, so the lines run through the letterforms. The shadow separates
+   the glyph edges from whatever passes beneath them. */
+html .page-title,
+html .page-subtitle,
+html .home-title,
+html .home-sub,
+html .home-section-label,
+html .home-glance-value,
+html .home-glance-label,
+html .section-label {
+  text-shadow: 0 1px 3px rgba(4, 10, 22, 0.65);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+html .btn { transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out); }
+html .btn:hover:not(:disabled) { transform: none; }
+html .btn-primary {
+  background: var(--color-red);
+  box-shadow: var(--glass-rim), 0 4px 14px rgba(227, 24, 55, 0.32);
+}
+html .btn-primary::before { content: none; }
+html .btn-primary:hover:not(:disabled) { background: var(--color-red-hover); }
+
+/* Secondary is a brighter sheet of the same material, not a white button */
+/* Same tight top highlight as the cards, sized for controls rather than panels */
+html .btn-secondary,
+html .btn-ghost,
+html .rp-lang-btn,
+html .segmented,
+html .chat-source-pill,
+html .nav-item {
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.00) 100%);
+}
+html .btn-secondary,
+html .btn-ghost {
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  box-shadow: var(--glass-rim);
+}
+html .btn-secondary:hover:not(:disabled),
+html .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.22); }
+
+/* ── Form controls ─────────────────────────────────────────────────────── */
+/* Fields are a dark well, not a white one. A white tint over the wallpaper made
+   every input read as a pale grey bar — the thing that looked "milky". Darker
+   than the card it sits in is what makes a field look recessed. */
+html .form-input, html .form-textarea, html .form-select,
+html .rp-input, html .rp-select, html .rp-textarea,
+html .acct-input, html .chat-input,
+html .av-input, html .av-select {
+  background: rgba(6, 13, 28, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+html .form-input::placeholder, html .form-textarea::placeholder,
+html .rp-input::placeholder, html .rp-textarea::placeholder,
+html .chat-input::placeholder, html .acct-input::placeholder {
+  color: rgba(255, 255, 255, 0.82);
+}
+/* index.css lightens fields on hover/focus (`rgba(255,255,255,0.85)`). Those
+   selectors carry two classes, which outranks `html .form-select` — so the
+   field flashed near-white under the cursor and swallowed its own text. These
+   have to match that specificity to win. */
+html .form-input:hover, html .form-textarea:hover, html .form-select:hover,
+html .rp-input:hover, html .rp-textarea:hover, html .rp-select:hover {
+  background-color: rgba(6, 13, 28, 0.56);
+  border-color: rgba(255, 255, 255, 0.36);
+}
+html .form-input:focus, html .form-textarea:focus, html .form-select:focus,
+html .rp-input:focus, html .rp-textarea:focus, html .rp-select:focus,
+html .chat-input:focus, html .acct-input:focus {
+  background-color: rgba(6, 13, 28, 0.62);
+  border-color: rgba(255, 255, 255, 0.48);
+  box-shadow: var(--shadow-focus-red);
+}
+
+/* Loan Suite has its own field class that the selectors above don't cover:
+   `rgba(255,255,255,0.7)`, going fully `#fff` on focus. */
+html .lc-input {
+  background: rgba(6, 13, 28, 0.46);
+  border: 1.5px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+html .lc-input:hover { background: rgba(6, 13, 28, 0.56); border-color: rgba(255, 255, 255, 0.36); }
+html .lc-input:focus {
+  background: rgba(6, 13, 28, 0.62);
+  border-color: var(--color-red);
+  box-shadow: var(--shadow-focus-red);
+}
+html .lc-input::placeholder { color: rgba(255, 255, 255, 0.72); }
+html .lc-label { color: rgba(255, 255, 255, 0.86); }
+html .lc-result { background: rgba(255, 255, 255, 0.08); }
+html .lc-result-label { color: rgba(255, 255, 255, 0.86); }
+html .lc-result-value { color: #FFFFFF; }
+
+html .form-label, html .rp-label { color: var(--color-text-muted); }
+/* Native dropdown lists render on the OS surface, not ours — they need a dark
+   option colour or they come out white-on-white. */
+html .form-select option, html .rp-select option, html .av-select option {
+  background: #16233A;
+  color: #FFFFFF;
+}
+
+/* ============================================================================
+   HOME
+   ============================================================================ */
+
+html .home-glance { border-bottom-color: rgba(255, 255, 255, 0.36); }
+html .home-glance-value { color: #FFFFFF; }
+html .home-glance-label { color: rgba(255, 255, 255, 0.96); }
+
+html .home-section-label,
+html .home-resume-eyebrow {
+  color: rgba(255, 255, 255, 0.96);
+  letter-spacing: 0.08em;
+}
+
+/* Pillars — the light-mode rule's grey tail vanishes on the wallpaper, and the
+   card text needs the same white treatment as every other panel here. */
+html .home-pillars-rule {
+  background: linear-gradient(90deg, var(--color-red) 0 24%, rgba(255, 255, 255, 0.32) 24% 100%);
+}
+html .home-pillar-title { color: #FFFFFF; }
+html .home-pillar-sub { color: rgba(255, 255, 255, 0.9); }
+
+html .home-resume { border-left: 3px solid var(--color-red); }
+
+html .home-shortcut-label,
+html .home-resume-name,
+html .home-activity-name,
+html .home-practice-value { color: #FFFFFF; }
+
+html .home-shortcut-desc,
+html .home-practice-caption,
+html .home-practice-empty-sub,
+html .home-empty { color: rgba(255, 255, 255, 0.96); }
+
+html .home-resume-meta,
+html .home-activity-meta,
+html .home-practice-outof { color: rgba(255, 255, 255, 0.96); }
+html .home-shortcut-arrow { color: rgba(255, 255, 255, 0.86); }
+
+/* HDFC red only reaches ~3.4:1 on this backdrop, so inline links use a lifted
+   tint of it rather than the brand value. */
+html .home-resume-go { color: #FF8095; }
+
+html .home-activity { border-bottom-color: rgba(255, 255, 255, 0.2); }
+html .home-activity:hover { background: rgba(255, 255, 255, 0.08); }
+html .home-activity-ic.chat { background: rgba(59, 130, 246, 0.28); color: #BFDBFE; }
+html .home-activity-ic.pitch { background: rgba(227, 24, 55, 0.28); color: #FFB3BF; }
+
+html .home-practice-meter { background: rgba(255, 255, 255, 0.16); }
+html .home-practice-empty-title { color: #FFFFFF; }
+
+html .home-shortcut-ic,
+html .home-resume-ic {
+  border-radius: 12px;
+  box-shadow: var(--glass-rim), 0 2px 8px rgba(4, 10, 22, 0.30);
+}
+html .home-resume-ic { background: rgba(227, 24, 55, 0.28); color: #FFB3BF; }
+
+/* ============================================================================
+   LISTS, CHAT, MISC — surfaces that hardcode light colours in index.css
+   ============================================================================ */
+
+html .history-row,
+html .chat-session-row { border-bottom-color: rgba(255, 255, 255, 0.2); }
+html .history-row:hover,
+html .chat-session-row:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ── AI Mentor / chat ───────────────────────────────────────────────────────
+   The assistant bubble is `rgba(255,255,255,0.85)` with `color: var(--color-text)`
+   in index.css. Flipping the text token to white turned it into white-on-white,
+   so this surface has to be repainted explicitly, not just re-tokenised. */
+html .chat-row.ai .chat-bubble {
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  box-shadow: var(--glass-rim);
+}
+html .chat-row.user .chat-bubble {
+  background: var(--color-red);
+  color: #FFFFFF;
+  box-shadow: var(--glass-rim), 0 4px 14px rgba(227, 24, 55, 0.28);
+}
+
+/* The chat shell paints several translucent *white* washes that lighten the
+   glass from underneath — they all go transparent or dark. */
+html .chat-messages,
+html .chatgpt-layout,
+html .chatgpt-main,
+html .chatgpt-main .chat-container { background: transparent; }
+
+html .chat-header,
+html .mentor-mode-toggle {
+  background: rgba(16, 28, 48, 0.55);
+  border-bottom-color: var(--glass-border-soft);
+}
+html .chat-header-title { color: #FFFFFF; }
+
+html .chat-input-bar,
+html .chat-footnote {
+  background: rgba(16, 28, 48, 0.72);
+  border-top-color: var(--glass-border-soft);
+}
+
+html .chatgpt-sidebar {
+  background: rgba(16, 28, 48, 0.82);
+  border-right-color: var(--glass-border-soft);
+}
+html .chat-session-row { color: rgba(255, 255, 255, 0.96); }
+
+html .chat-source-pill {
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.96);
+}
+html .chat-empty-title { color: #FFFFFF; }
+html .chat-empty-hint { color: var(--color-text-faint); }
+
+/* ============================================================================
+   ROLEPLAY — the local tokens above fix most of it; these are the rules that
+   hardcode grey hex values instead of reading a variable.
+   ============================================================================ */
+
+html .rp-page-title,
+html .rp-preset-title,
+html .rp-rec-guide-head,
+html .rp-coach-label,
+html .rp-section-title { color: #FFFFFF; }
+
+html .rp-page-sub,
+html .rp-preset-sub,
+html .rp-rec-guide-lead,
+html .rp-rec-guide-steps,
+html .rp-rec-guide-note { color: rgba(255, 255, 255, 0.96); }
+
+html .rp-rec-guide-steps b,
+html .rp-rec-guide-note b { color: #FFFFFF; }
+
+html .rp-coach-sub,
+html .rp-coach-sec-count,
+html .rp-preset-lang-label,
+html .rp-hint,
+html .rp-muted { color: rgba(255, 255, 255, 0.84); }
+
+/* Status colours were picked for a white card and go muddy on glass */
+html .rp-coach-item--done .rp-coach-label   { color: #6EE7B7; }
+html .rp-coach-item--done .rp-coach-sub     { color: rgba(110, 231, 183, 0.80); }
+html .rp-coach-item--missed .rp-coach-label { color: #FDA4AF; }
+
+html .rp-preset-cat,
+html .rp-cat-title { color: #FFFFFF; }
+
+/* ── In-call overlays: live coach checklist + transcript ────────────────────
+   Both panels are `rgba(255,255,255,.97)` — near-opaque white. Lifting their
+   label colours earlier made them white-on-white, so the panels themselves
+   have to be repainted before the text fix means anything. These float over
+   live video, so they stay near-opaque rather than becoming glass. */
+html .rp-coach,
+html .rp-tx {
+  background: rgba(10, 18, 36, 0.94);
+  border-color: var(--glass-border);
+}
+html .rp-coach-head,
+html .rp-tx-head {
+  background: rgba(16, 28, 48, 0.96);
+  border-bottom-color: var(--glass-border-soft);
+}
+html .rp-coach-title,
+html .rp-tx-title { color: #FFFFFF; }
+html .rp-coach-count { background: rgba(227, 24, 55, 0.24); color: #FFB3BF; }
+html .rp-coach-note { background: rgba(251, 191, 36, 0.18); color: #FDE9B8; }
+html .rp-coach-sec-head { color: rgba(255, 255, 255, 0.82); }
+html .rp-coach-item:hover { background: rgba(255, 255, 255, 0.08); }
+html .rp-coach-box { background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.34); }
+html .rp-coach-box--done   { background: #22C55E; border-color: #22C55E; }
+html .rp-coach-box--missed { background: #EF4444; border-color: #EF4444; }
+html .rp-coach-spin { border-color: rgba(255, 255, 255, 0.24); border-top-color: rgba(255, 255, 255, 0.70); }
+html .rp-tx-text { color: rgba(255, 255, 255, 0.94); }
+html .rp-tx-empty { color: rgba(255, 255, 255, 0.76); }
+
+/* ── "Record this session" prompt ───────────────────────────────────────────
+   Same white-on-white trap as the two panels above: RolePlay.css paints this
+   modal `#fff`, and the rec-guide text rules earlier in this file lift its type
+   to white. Repaint the sheet, its inset note, and the two buttons — the navy
+   CTA disappears against a dark card, so it takes the brand red. */
+html .rp-rec-guide {
+  background: rgba(10, 18, 36, 0.96);
+  border: 1px solid var(--glass-border);
+}
+html .rp-rec-guide-note {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+}
+html .rp-rec-guide-cancel {
+  background: transparent;
+  border-color: var(--glass-border);
+  color: rgba(255, 255, 255, 0.84);
+}
+html .rp-rec-guide-cancel:hover { background: rgba(255, 255, 255, 0.10); }
+html .rp-rec-guide-go { background: var(--color-red); }
+html .rp-rec-guide-go:hover { background: var(--color-red-hover, var(--color-red)); }
+
+/* Post-call recording card on the report screen */
+html .rp-rec-btn--start { background: var(--color-red); }
+html .rp-rec-btn--start:hover { background: var(--color-red-hover, var(--color-red)); }
+
+/* ── Avatar preset cards ────────────────────────────────────────────────────
+   The card was `background: #fff` with grey body copy and a brand-red meta
+   line. On glass, brand red only manages ~3:1 and the grey drops below 3 —
+   so the whole text scheme is retuned for a dark sheet. */
+/* The sheet itself comes from the shared glass rule above — this only adjusts
+   the radius. Re-declaring `background` here would drop the glaze layer. */
+html .rp-preset-card { border-radius: var(--radius-lg); }
+html .rp-preset-card:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--glass-rim), inset 0 -1px 0 rgba(4, 10, 22, 0.22), var(--shadow-lg);
+}
+html .rp-preset-body { padding: 18px 18px 20px; gap: 7px; }
+
+html .rp-preset-name { color: #FFFFFF; font-size: 16px; }
+/* Lifted rose keeps the meta line in the brand family while staying legible.
+   Measured against the card sheet over the wallpaper's brightest region:
+   #E31837 is 1.5:1 (unreadable), #FFB3BF 4.3:1 (still short at 11px),
+   #FFCED6 5.1:1. */
+html .rp-preset-tag { color: #FFCED6; }
+html .rp-preset-blurb { color: rgba(255, 255, 255, 0.96); font-size: 13px; }
+html .rp-preset-more {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+html .rp-preset-more:hover { color: #FFCED6; }
+/* Join Call: lighter red, glazed. The gradient runs light at the top edge into
+   the brand red below, which is what gives it the wet look — a flat light red
+   reads as a washed-out brand colour rather than a gloss.
+
+   Contrast note: white on #E31837 is 4.76:1. Every red lighter than that fails
+   AA for 14px text — #FF6B80 alone is 2.9:1. Keeping the base at brand red and
+   putting the light tone only in the top third means the label sits over
+   roughly 4.3:1. If this button has to pass AA strictly, the fix is to revert
+   to a solid #E31837 fill, not to darken the text. */
+html .rp-preset-join {
+  border-radius: var(--radius-md);
+  background-image: linear-gradient(180deg,
+    #FF7186 0%,
+    #F0304C 38%,
+    #E31837 72%,
+    #D4142F 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 4px 14px rgba(227, 24, 55, 0.38);
+  text-shadow: 0 1px 2px rgba(120, 8, 26, 0.45);
+}
+html .rp-preset-join:hover:not(:disabled) {
+  background-image: linear-gradient(180deg,
+    #FF8496 0%,
+    #F53B56 38%,
+    #E8203E 72%,
+    #DC1833 100%);
+  opacity: 1;
+}
+
+/* The app's other primary buttons get the same glaze so the CTA language is
+   consistent, but keep the brand red base. */
+html .btn-primary,
+html .pvl-submit {
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.06) 38%,
+    rgba(255, 255, 255, 0.00) 100%);
+}
+
+/* Language toggle: `background: #fff` with `var(--color-text-secondary)` text.
+   Defining that token as white turned this into a blank white box. */
+html .rp-lang-btn {
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  box-shadow: var(--glass-rim);
+}
+html .rp-lang-btn:hover { background: rgba(255, 255, 255, 0.22); border-color: rgba(255, 255, 255, 0.34); }
+html .rp-lang-btn--active {
+  background: var(--color-red);
+  border-color: var(--color-red);
+  color: #FFFFFF;
+}
+
+html .segmented {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+html .segmented-btn { color: rgba(255, 255, 255, 0.88); }
+/* 0.22 white read as a pale grey chip stuck on the glass. A dimmer fill plus a
+   rim and a red underline marks the selection without going opaque. */
+html .segmented-btn.active {
+  background-color: rgba(255, 255, 255, 0.13);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -2px 0 var(--color-red);
+}
+
+html .alert { border-radius: var(--radius-lg); }
+
+/* ============================================================================
+   PITCH OUTPUT — the generated-script renderer and the streaming timeline.
+   These are the densest light surfaces in index.css: white sheets at 0.4–0.7
+   alpha with ink text. Once the text token flipped to white they became
+   white-on-white. Everything here is a background repaint plus a text tier.
+   ============================================================================ */
+
+/* Nested inside an already-glass card, so this needs to be opaque enough to
+   darken it further rather than blend back into it. */
+html .pitch-section {
+  background: rgba(6, 13, 30, 0.52);
+  border: 1px solid var(--glass-border);
+  border-left: 3px solid var(--accent-color, var(--color-red));
+}
+html .pitch-section:hover { background: rgba(6, 13, 30, 0.60); transform: none; }
+html .pitch-section-header:hover { background: rgba(255, 255, 255, 0.06); }
+html .pitch-section-body {
+  background: transparent;
+  border-top-color: var(--glass-border-soft);
+  color: #FFFFFF;
+}
+html .pitch-section-title { color: #FFFFFF; }
+html .pitch-list, html .pitch-body-text, html .pitch-numbered { color: rgba(255, 255, 255, 0.94); }
+
+html .pitch-toolbar {
+  background: linear-gradient(135deg, rgba(227, 24, 55, 0.22) 0%, rgba(8, 16, 34, 0.62) 60%);
+}
+html .pitch-toolbar-heading { color: #FFFFFF; }
+html .pitch-toolbar-sub { color: rgba(255, 255, 255, 0.86); }
+
+/* Streaming timeline. Pending chips were #f8fafc with muted ink; done/error
+   reused tint tokens that are now translucent, so only the text needs lifting. */
+html .pitch-step,
+html .pitch-step-pending {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-border);
+  color: rgba(255, 255, 255, 0.84);
+}
+html .pitch-step-generating {
+  background: rgba(251, 191, 36, 0.18);
+  border-color: rgba(252, 211, 77, 0.55);
+  color: #FDE68A;
+}
+html .pitch-step-done {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: rgba(110, 231, 183, 0.55);
+  color: #A7F3D0;
+}
+html .pitch-step-error {
+  background: rgba(251, 113, 133, 0.18);
+  border-color: rgba(253, 164, 175, 0.55);
+  color: #FECDD3;
+}
+html .pitch-step-label { color: inherit; }
+html .pitch-step-meta { color: inherit; opacity: 0.82; }
+
+html .pitch-stream-title { color: #FFFFFF; }
+html .pitch-stream-sub { color: rgba(255, 255, 255, 0.86); }
+html .pitch-stream-section {
+  background: rgba(6, 13, 30, 0.52);
+  border-color: var(--glass-border);
+}
+html .pitch-stream-section > summary { background: transparent; color: #FFFFFF; }
+/* The body carries its own `background: #fff` — the parent repaint doesn't
+   reach it, which is why these rendered as blank white blocks. */
+html .pitch-stream-section-body {
+  background: rgba(6, 13, 30, 0.52);
+  border-top-color: var(--glass-border-soft);
+  color: rgba(255, 255, 255, 0.94);
+}
+
+/* Q&A, objection and narrative blocks inside a section */
+html .qa-pair {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--glass-border-soft);
+}
+html .qa-pair:hover { background: rgba(255, 255, 255, 0.12); transform: none; }
+html .qa-q { color: #BFDBFE; }
+html .qa-a { color: rgba(255, 255, 255, 0.94); }
+
+html .obj-pair {
+  background: linear-gradient(135deg, rgba(227, 24, 55, 0.18) 0%, rgba(227, 24, 55, 0.08) 100%);
+}
+html .obj-objection { color: #FFB3BF; }
+html .obj-response { color: rgba(255, 255, 255, 0.94); }
+
+html .narrative-box {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.94);
+}
+
+/* "What NOT to Say" items. `color: #78350F` is a dark amber picked for a pale
+   amber card — on the dark sheet it was near-invisible. The tint stays amber;
+   the text moves to the light end of the same ramp. */
+html .warn-item {
+  background: rgba(251, 191, 36, 0.14);
+  border-left-color: #FBBF24;
+  color: #FDE9B8;
+}
+
+/* Coaching script: agent speech, [PAUSE] pills and [CUE] hints. The purple and
+   amber were picked for white paper and go muddy on the dark sheet. */
+html .dl-speech { background: rgba(255, 255, 255, 0.07); color: rgba(255, 255, 255, 0.96); }
+html .dl-speech strong { color: #FF8095; }
+html .dl-pause { color: #C4B5FD; background: rgba(167, 139, 250, 0.18); }
+html .dl-cue { background: rgba(251, 191, 36, 0.14); }
+html .dl-cue-label { color: #FDE68A; background: rgba(251, 191, 36, 0.26); }
+html .dl-cue-text { color: rgba(253, 230, 138, 0.94); }
+
+html .doc-chip {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: var(--glass-border);
+  color: rgba(255, 255, 255, 0.90);
+}
+
+/* Remaining hardcoded light surfaces found by sweeping index.css for
+   `background: #fff` and `rgba(255,255,255,0.4+)`. Each one renders as a pale
+   block on the wallpaper regardless of what the tokens say. */
+html .main--conv .main-inner { background: rgba(6, 13, 30, 0.42); }
+html .pill {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: var(--glass-border);
+  color: rgba(255, 255, 255, 0.90);
+}
+html .doc-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: none;
+  box-shadow: none;
+}
+html .chat-typing { background: rgba(255, 255, 255, 0.12); }
+html .live-history-row { background: rgba(255, 255, 255, 0.08); border-color: var(--glass-border); }
+html .live-history-row:hover { background: rgba(255, 255, 255, 0.14); transform: none; }
+
+/* ── Pitch History ──────────────────────────────────────────────────────── */
+html .history-row-name { color: #FFFFFF; }
+html .history-row-subtitle { color: rgba(255, 255, 255, 0.84); }
+html .history-row-preview { color: rgba(255, 255, 255, 0.78); }
+html .history-card-meta { color: rgba(255, 255, 255, 0.84); }
+html .history-card-text { color: rgba(255, 255, 255, 0.94); }
+html .history-empty { color: rgba(255, 255, 255, 0.84); }
+html .conv-name { color: #FFFFFF; }
+html .conv-meta { color: rgba(255, 255, 255, 0.84); }
+html .conv-name-input {
+  background: rgba(6, 13, 28, 0.46);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #FFFFFF;
+}
+
+/* The sticky composer at the bottom of a saved pitch. `rgba(255,255,255,0.85)`
+   — I had only repainted this inside the phone media query, so it stayed white
+   on desktop and took the glass buttons sitting on it down with it. */
+html .conv-input-card {
+  background: rgba(10, 18, 36, 0.90);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-rim), 0 12px 36px rgba(4, 10, 22, 0.42);
+}
+html .conv-sources-label { color: rgba(255, 255, 255, 0.82); }
+
+/* ============================================================================
+   EVA — the floating assistant panel
+   `.fab-panel` is `background: #fff`, and the Chat/Voice toggle and the
+   suggestion chips are all built for that white sheet. It floats over the app
+   rather than sitting in it, so it stays near-opaque like the in-call overlays.
+   ============================================================================ */
+
+html .fab-panel {
+  background: rgba(10, 18, 36, 0.96);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-rim), 0 20px 56px rgba(4, 10, 22, 0.55);
+}
+/* This is the one that was still white. `.fab-panel .chat-container` sets
+   `background: #fff` at (0,2,0), which outranks the `html .chat-container`
+   repaint at (0,1,1) — so the panel body stayed white under everything else,
+   and the chips sitting on it kept their light text. */
+html .fab-panel .chat-container,
+html .fab-panel .chat-messages,
+html .fab-panel .fab-empty { background: transparent; }
+
+html .fab-panel .chat-header {
+  background: rgba(16, 28, 48, 0.96);
+  border-bottom-color: var(--glass-border-soft);
+}
+html .fab-panel .chat-input-bar,
+html .fab-panel .chat-footnote { background: rgba(16, 28, 48, 0.92); }
+html .fab-mode-toggle {
+  background: rgba(16, 28, 48, 0.90);
+  border-bottom-color: var(--glass-border-soft);
+}
+html .fab-mode-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.84);
+}
+html .fab-mode-btn:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.14); }
+html .fab-mode-btn.on {
+  background: rgba(227, 24, 55, 0.26);
+  border-color: rgba(255, 179, 191, 0.50);
+  color: #FFD3DA;
+}
+html .fab-empty { color: rgba(255, 255, 255, 0.90); }
+html .fab-quick-chip {
+  background: rgba(227, 24, 55, 0.18);
+  border-color: rgba(255, 179, 191, 0.42);
+  color: #FFD3DA;
+}
+html .fab-quick-chip:hover { background: rgba(227, 24, 55, 0.30); color: #FFFFFF; }
+html .fab-callout { color: #FFFFFF; }
+
+/* ============================================================================
+   SIGN-IN — Login.css paints its own gradients, so it needs its own repaint
+   ============================================================================ */
+
+/* Login.css carries its own `--pvl-*` palette built for a light card, so the
+   ink/muted/faint tiers get remapped once here rather than chasing each class.
+   Without this, "Forgot password?" and the footer render dark-on-dark. */
+html .pvl-root {
+  background: transparent;
+  --pvl-ink:   #FFFFFF;
+  --pvl-muted: rgba(255, 255, 255, 0.86);
+  --pvl-faint: rgba(255, 255, 255, 0.74);
+  --pvl-line:  rgba(255, 255, 255, 0.16);
+  --pvl-danger: #FF8095;
+  --pvl-danger-bg: rgba(251, 113, 133, 0.16);
+}
+html .pvl-root::before { content: none; }   /* the 44px grid wash */
+html .pvl-link:hover, html .pvl-toggle:hover { color: #FF8095; }
+
+html .pvl-card {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: var(--glass-rim), var(--shadow-lg);
+}
+html .pvl-card-wrap::before,
+html .pvl-card-wrap::after { content: none; }   /* animated masked borders */
+
+html .pvl-h { color: #FFFFFF; }
+html .pvl-h-sub, html .pvl-label { color: rgba(255, 255, 255, 0.96); }
+html .pvl-input {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+html .pvl-input::placeholder { color: rgba(255, 255, 255, 0.65); }
+
+/* Login.css flips the input to `background: #fff` on focus — written for the
+   original light card. With the glass palette the type is white, so a focused
+   field became white-on-white and you couldn't see what you were typing. Keep
+   the field translucent and only lift it slightly. */
+html .pvl-input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 4px rgba(227, 24, 55, 0.22);
+  color: #FFFFFF;
+  caret-color: #FFFFFF;
+}
+
+/* Chrome paints autofilled fields with its own near-white background and dark
+   text, and ignores `background-color` for them — the inset-shadow trick is the
+   only reliable repaint. Without this, a saved login renders as a white slab. */
+html .pvl-input:-webkit-autofill,
+html .pvl-input:-webkit-autofill:hover,
+html .pvl-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #FFFFFF;
+  caret-color: #FFFFFF;
+  -webkit-box-shadow: 0 0 0 1000px rgba(24, 38, 62, 0.98) inset;
+  transition: background-color 9999s ease-out 0s;   /* outrun Chrome's repaint */
+}
+
+html .pvl-submit {
+  background: var(--color-red);
+  box-shadow: var(--glass-rim), 0 4px 14px rgba(227, 24, 55, 0.32);
+  border-radius: var(--radius-md);
+  min-height: 48px;
+}
+html .pvl-submit:hover:not(:disabled) {
+  background: var(--color-red-hover);
+  transform: none;
+  filter: none;
+}
+html .pvl-submit::after { content: none; }   /* shine sweep */
+
+/* ============================================================================
+   FIELD-FIRST — phone comfort
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  :root {
+    --header-h: 56px;
+    --bottom-nav-h: 76px;   /* was 66 — 9px labels in a 66px bar were cramped */
+    /* Blurring every surface is the expensive part of this look, and mid-range
+       Android is where it shows. Phones get a shallower blur and a more opaque
+       sheet, which needs less sampling to stay legible. */
+    --glass-blur: 14px;
+    --glass-bg: rgba(255, 255, 255, 0.14);
+    --glass-bg-strong: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Body copy one step up: 14px is the floor for reading a script on a call */
+  html, body, #root { font-size: 15px; }
+
+  /* The backdrop stays position: fixed here. The iOS bug is specific to
+     `background-attachment: fixed`; a fixed-position element painting a normal
+     background is fine, and switching to absolute made it end partway down the
+     page whenever the body was shorter than the viewport.
+
+     `cover` on a portrait phone crops a 3:2 landscape image to its middle
+     ~31%, which on this wallpaper is the flat dark band — all the colour is
+     bottom-left. Shifting the focal point puts the magenta glow and the grid
+     back on screen. */
+  html body::before { background-position: 32% 68%; }
+
+  html .card,
+  html .home-card,
+  html .home-shortcut,
+  html .home-resume { border-radius: var(--radius-lg); }
+
+  /* Co-brand on phones: at 375px the full lockup plus the account chip needs
+     more room than the bar has. The product wordmark drops out — the PE mark
+     still identifies it — so both brands stay visible instead of one being
+     squeezed out entirely. */
+  html .topbar-title { display: none; }
+  html .topbar-brand { gap: 10px; }
+  html .topbar-logo-img { width: 38px; height: 38px; }
+  html .topbar-cobrand { height: 19px; }
+  html .topbar-cobrand-rule { height: 22px; }
+
+  /* ── Bottom bar ─────────────────────────────────────────────────────── */
+  html .sidebar {
+    background: rgba(10, 22, 40, 0.88);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 -2px 12px rgba(4, 10, 22, 0.40);
+  }
+  html .nav-item {
+    /* 44px is the Apple/Material minimum; the column is taller than that */
+    min-height: 44px;
+    padding: 9px 2px 7px;
+    /* The desktop pill is dropped — tab-bar columns are full-bleed, and six
+       pills side by side would leave no room for the labels. */
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  html .nav-item .nav-item-icon { width: 22px; height: 22px; }
+  html .nav-item .nav-item-short {
+    font-size: 11px;          /* was 9px */
+    font-weight: 600;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+  html .nav-item-icon { color: rgba(255, 255, 255, 0.72); }
+  html .nav-item:hover { background: transparent; }
+  html .nav-item.active {
+    background: rgba(227, 24, 55, 0.20);
+    color: #FFFFFF;
+    box-shadow: none;
+  }
+  html .nav-item.active .nav-item-icon { color: #FFFFFF; }
+  html .nav-item.active::after {
+    display: block;
+    background: var(--color-red);
+    box-shadow: none;
+    width: 28px;
+  }
+
+  /* ── Rhythm: cards breathe, edges stay reachable with one thumb ─────── */
+  html .main { padding: 12px 0 calc(var(--bottom-nav-h) + 12px); }
+  html .main-inner { gap: 12px; }
+  html .card,
+  html .pitch-section,
+  html .lc-acc-item,
+  html .history-list,
+  html .doc-grid,
+  html .alert { margin-left: 12px; margin-right: 12px; }
+  html .page-header, html .page-actions { padding-left: 12px; padding-right: 12px; }
+  html .card-padded { padding: 16px; }
+  html .card-body   { padding: 16px; }
+  html .card-header { padding: 14px 16px; }
+
+  html .page-title    { font-size: 22px; }
+  html .page-subtitle { font-size: 13px; }
+
+  /* ── Tap targets: nothing actionable under 44px tall ────────────────── */
+  html .btn {
+    min-height: 44px;
+    padding: 11px 16px;
+    font-size: 14px;
+  }
+  html .btn-icon-only { min-width: 44px; width: 44px; height: 44px; padding: 0; }
+  html .segmented-btn { min-height: 42px; font-size: 13px; }
+  html .pitch-toolbar-actions .btn { font-size: 13px; padding: 11px 12px; }
+  html .conv-quick-actions .btn { font-size: 13px; padding: 11px 12px; min-height: 44px; }
+  html .topbar-signout, html .topbar-profile { min-width: 40px; min-height: 40px; }
+
+  html .history-row  { padding: 14px 16px; min-height: 56px; }
+  html .lc-acc-header { padding: 15px 16px; min-height: 52px; }
+  html .chat-bubble  { font-size: 14px; padding: 11px 14px; line-height: 1.6; }
+
+  /* Pinned shells sit on the glass, not on white */
+  html .conv-header {
+    background: rgba(16, 28, 48, 0.86);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  html .conv-input-card {
+    background: rgba(16, 28, 48, 0.86);
+    border-top: 1px solid var(--glass-border);
+  }
+  html .conv-shell { background: transparent; }
+}
+
+/* Measured at 375px: the widest short label ("RolePlay") is 46px inside a 62px
+   column, so 11px stays legible here — only the narrowest phones step down. */
+@media (max-width: 400px) {
+  html .card, html .pitch-section, html .alert { margin-left: 10px; margin-right: 10px; }
+}
+@media (max-width: 340px) {
+  html .nav-item .nav-item-short { font-size: 10px; }
+}
+
+/* ── Motion ────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html * { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,162 @@
+/* Eva 2.0 — Voice Assistant. Light, clean, friendly. */
+.eva-voice {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5fb 55%, #eaf0f8 100%);
+  color: #1f2937;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e6ecf5;
+}
+
+/* top bar */
+.eva-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef2f8;
+  flex: 0 0 auto;
+}
+.eva-title { font-size: 16px; font-weight: 700; color: #0a1628; display: flex; align-items: baseline; gap: 8px; }
+.eva-title b { color: #E31837; }
+.eva-title .eva-sub { font-size: 12px; font-weight: 500; color: #8a98ad; letter-spacing: .2px; }
+
+.eva-lang-seg { display: inline-flex; background: #eef2f8; border-radius: 10px; padding: 3px; gap: 2px; }
+.eva-lang-pill {
+  border: none; background: transparent; color: #64748b;
+  font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 8px; cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.eva-lang-pill:hover:not(:disabled) { color: #0a1628; }
+.eva-lang-pill.on { background: #fff; color: #E31837; box-shadow: 0 1px 3px rgba(10,22,40,.08); }
+.eva-lang-pill:disabled { cursor: default; opacity: .75; }
+
+/* stage */
+.eva-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 46px 16px 4px;
+  overflow: hidden;
+}
+.eva-badge {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;
+  color: #64748b; padding: 5px 13px; border: 1px solid #e3e9f2; border-radius: 20px; background: #fff;
+}
+.eva-dot { width: 7px; height: 7px; border-radius: 50%; background: #cbd5e1; }
+.eva-listening .eva-dot { background: #0ea5c4; animation: eva-blink 1s infinite; }
+.eva-thinking .eva-dot { background: #8b5cf6; animation: eva-blink 1s infinite; }
+.eva-speaking .eva-dot { background: #E31837; animation: eva-blink 1s infinite; }
+@keyframes eva-blink { 50% { opacity: .3; } }
+
+/* soft halo behind Eva so her light body pops on a light bg */
+.eva-halo {
+  border-radius: 50%;
+  padding: 6px;
+  background: radial-gradient(circle at 50% 42%, #ffffff 0%, #eaf1fb 55%, rgba(234,241,251,0) 72%);
+}
+.eva-listening .eva-halo { background: radial-gradient(circle at 50% 42%, #ffffff 0%, #dbf3f9 55%, rgba(219,243,249,0) 72%); }
+.eva-speaking .eva-halo { background: radial-gradient(circle at 50% 42%, #ffffff 0%, #ffe4ea 55%, rgba(255,228,234,0) 72%); }
+.eva-svg { width: 216px; max-width: 54vw; height: auto; display: block; }
+
+/* captions — this is the scroll region for long answers */
+.eva-captions {
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+  margin-top: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 4px 8px;
+}
+.eva-live { font-size: 17px; color: #0a1628; font-weight: 500; line-height: 1.5; }
+.eva-muted { color: #94a3b8; font-weight: 400; }
+.eva-bubble {
+  display: block; text-align: left; max-width: 100%;
+  font-size: 15px; line-height: 1.6; padding: 11px 16px; border-radius: 14px; margin: 6px 0;
+  white-space: pre-wrap;
+}
+.eva-bubble span {
+  display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  margin-right: 8px; vertical-align: 1px;
+}
+.eva-you { background: #eef2f8; color: #475569; }
+.eva-you span { color: #94a3b8; }
+.eva-said { background: #fff2f4; color: #0a1628; border: 1px solid #ffd9e0; }
+.eva-said span { color: #E31837; }
+.eva-hint { font-size: 13.5px; color: #8a98ad; margin: 8px auto; max-width: 90%; }
+
+/* controls */
+.eva-controls { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; padding: 12px 16px 20px; min-height: 96px; }
+
+.eva-mic-btn {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+  border: none; cursor: pointer; background: transparent; color: #E31837; font-weight: 600; font-size: 13px;
+}
+.eva-mic-btn > svg {
+  color: #fff; background: linear-gradient(135deg, #E31837, #b3122b);
+  width: 68px; height: 68px; padding: 21px; border-radius: 50%;
+  box-shadow: 0 10px 24px rgba(227,24,55,.34); transition: transform .12s, box-shadow .12s;
+}
+.eva-mic-btn:hover > svg { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(227,24,55,.42); }
+
+.eva-listen-row { display: flex; align-items: center; gap: 18px; position: relative; }
+.eva-round {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; cursor: pointer; border-radius: 50%; color: #fff; transition: transform .12s, box-shadow .12s;
+}
+.eva-round:hover { transform: translateY(-2px); }
+.eva-confirm { width: 74px; height: 74px; background: linear-gradient(135deg, #16a34a, #0f9d58); box-shadow: 0 10px 24px rgba(22,163,74,.36); animation: eva-pulse 1.6s infinite; }
+.eva-cancel { width: 52px; height: 52px; background: #e2e8f0; color: #475569; }
+.eva-cancel:hover { background: #cbd5e1; }
+.eva-stop { width: 60px; height: 60px; background: linear-gradient(135deg, #E31837, #b3122b); box-shadow: 0 8px 20px rgba(227,24,55,.3); }
+.eva-round-label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 12px; color: #8a98ad; white-space: nowrap; }
+.eva-working { font-size: 14px; color: #8b5cf6; font-weight: 600; }
+@keyframes eva-pulse { 0% { box-shadow: 0 10px 24px rgba(22,163,74,.36), 0 0 0 0 rgba(22,163,74,.4); } 70% { box-shadow: 0 10px 24px rgba(22,163,74,.36), 0 0 0 16px rgba(22,163,74,0); } 100% { box-shadow: 0 10px 24px rgba(22,163,74,.36), 0 0 0 0 rgba(22,163,74,0); } }
+
+@media (max-width: 640px) {
+  .eva-svg { max-width: 56vw; }
+  .eva-controls { padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
+}
+
+/* Compact variant — inside the floating Eva bubble (narrow panel) */
+.eva-voice--compact { border-radius: 0; border: none; }
+.eva-voice--compact .eva-topbar { padding: 8px 12px; }
+.eva-voice--compact .eva-title { display: none; }              /* the FAB header already says "Eva 2.0" */
+.eva-voice--compact .eva-lang-seg { margin-left: auto; }
+.eva-voice--compact .eva-lang-pill { padding: 5px 10px; font-size: 12px; }
+.eva-voice--compact .eva-stage { padding: 34px 12px 2px; }
+.eva-voice--compact .eva-svg { width: 132px; max-width: 60%; }
+.eva-voice--compact .eva-badge { top: 8px; font-size: 10px; padding: 3px 10px; }
+.eva-voice--compact .eva-captions { font-size: 13px; }
+.eva-voice--compact .eva-live { font-size: 15px; }
+.eva-voice--compact .eva-bubble { font-size: 13.5px; padding: 9px 12px; }
+.eva-voice--compact .eva-controls { padding: 8px 12px 14px; min-height: 74px; }
+.eva-voice--compact .eva-mic-btn { font-size: 12px; gap: 6px; }
+.eva-voice--compact .eva-mic-btn > svg { width: 54px; height: 54px; padding: 16px; }
+.eva-voice--compact .eva-confirm { width: 60px; height: 60px; }
+.eva-voice--compact .eva-cancel { width: 44px; height: 44px; }
+
+/* dark-mode: keep it readable if the app shell flips */
+@media (prefers-color-scheme: dark) {
+  .eva-voice { background: linear-gradient(180deg, #0f1b2e, #0a1628); color: #e8eefb; border-color: #1e2b40; }
+  .eva-topbar { border-color: #1a2740; }
+  .eva-title { color: #eef4ff; }
+  .eva-lang-seg { background: #16233a; }
+  .eva-lang-pill.on { background: #0a1628; }
+  .eva-badge { background: #10233c; border-color: #24344f; color: #9fb0c9; }
+  .eva-live { color: #eef4ff; }
+  .eva-you { background: #16233a; color: #b8c6dd; }
+  .eva-said { background: #2a1420; border-color: #5a2233; color: #ffe1e7; }
+  .eva-halo, .eva-listening .eva-halo, .eva-speaking .eva-halo { background: none; }
+}

@@ -1,0 +1,59 @@
+# Python dependencies — compatible with Python 3.13
+fastapi>=0.135.0
+uvicorn[standard]>=0.34.0
+python-multipart
+pandas>=2.2.0
+numpy>=2.0.0
+requests>=2.32.0
+httpx>=0.28.0
+pydantic>=2.12.0
+
+# Document parsing
+PyPDF2==3.0.1
+pdfplumber>=0.11.0
+python-docx>=1.2.0
+python-pptx>=1.0.0
+
+# ML / embeddings
+sentence-transformers>=5.0.0
+scikit-learn>=1.6.0
+rank_bm25==0.2.2
+
+# Translation
+deep-translator==1.11.4
+
+# Text-to-Speech
+edge-tts>=6.1.12
+
+# Language detection
+langdetect==1.0.9
+
+# Audio processing
+# audioop-lts backfills the audioop module removed in Python 3.13. It has no
+# distribution for <3.13 (where audioop is still stdlib), so an unconditional
+# pin breaks `pip install -r` on the 3.10 serving interpreter.
+audioop-lts>=0.2.1; python_version >= "3.13"
+librosa>=0.11.0
+soundfile
+imageio-ffmpeg
+
+# OpenAI
+openai>=1.0.0
+
+# Twilio
+twilio>=9.0.0
+
+# Noise reduction
+noisereduce>=3.0.0
+
+# Local STT
+faster-whisper
+
+# Database / ORM (enterprise multi-tenant data layer)
+# Postgres in production (set DATABASE_URL=postgresql+psycopg://...); falls back
+# to a local SQLite file for development. Alembic manages schema migrations.
+SQLAlchemy>=2.0,<2.1
+alembic>=1.13
+psycopg[binary]>=3.1   # PostgreSQL driver (psycopg3)
+openpyxl>=3.1          # Excel (.xlsx) export for admin reports
+reportlab>=4.0         # PDF export for admin reports

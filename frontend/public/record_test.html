@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RolePlay Recording — Feasibility Proof</title>
+<style>
+  :root { --navy:#0a1628; --red:#E31837; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; font-family:"Segoe UI",system-ui,Arial,sans-serif;
+    background:linear-gradient(180deg,#f7f9fc,#eef2f8); color:#1f2937; padding:24px; }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { font-size:22px; color:var(--navy); margin:0 0 4px; }
+  .sub { color:#64748b; font-size:14px; margin-bottom:18px; }
+  .card { background:#fff; border:1px solid #e6ecf5; border-radius:14px; padding:20px; box-shadow:0 6px 20px #0a16280d; }
+  ol { margin:0 0 16px; padding-left:20px; color:#334155; line-height:1.7; font-size:14px; }
+  ol b { color:var(--navy); }
+  .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  button { font:inherit; font-size:15px; font-weight:600; border:none; border-radius:10px; padding:12px 22px; cursor:pointer; }
+  .rec { background:var(--navy); color:#fff; }
+  .stop { background:#fff; color:var(--red); border:1px solid #f4c2cc; }
+  button:disabled { opacity:.5; cursor:default; }
+  .badge { display:inline-flex; align-items:center; gap:7px; font-weight:700; color:var(--red);
+    background:#fff2f4; border:1px solid #f4c2cc; padding:5px 12px; border-radius:999px; font-size:13px; }
+  .dot { width:9px; height:9px; border-radius:50%; background:var(--red); animation:b 1.1s infinite; }
+  @keyframes b { 50% { opacity:.25; } }
+  .status { margin-top:14px; font-size:13.5px; color:#475569; min-height:20px; }
+  video { width:100%; margin-top:16px; border-radius:12px; background:#000; display:none; }
+  .ok { color:#16a34a; font-weight:600; }
+  .err { color:var(--red); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>RolePlay recording — does it actually work?</h1>
+  <div class="sub">This is the exact mechanism used in the app, running standalone. No login, no server.</div>
+
+  <div class="card">
+    <ol>
+      <li>Click <b>Start recording</b>.</li>
+      <li>In the browser prompt, choose <b>“This Tab”</b> (or a window) and tick <b>“Share tab audio”</b>.</li>
+      <li>Talk / play something, then click <b>Stop &amp; Save</b>.</li>
+      <li>The video <b>downloads to your Downloads folder</b> — and also plays back below so you can see it captured correctly.</li>
+    </ol>
+
+    <div class="row">
+      <button id="rec" class="rec">● Start recording</button>
+      <button id="stop" class="stop" disabled>■ Stop &amp; Save</button>
+      <span id="badge" class="badge" style="display:none"><span class="dot"></span> REC</span>
+    </div>
+
+    <div class="status" id="status"></div>
+    <video id="playback" controls></video>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let recorder = null, chunks = [], streams = [], ac = null, mime = "";
+
+function setStatus(msg, cls) { const s = $("status"); s.textContent = msg; s.className = "status" + (cls ? " " + cls : ""); }
+function cleanup() { streams.forEach(s => { try { s.getTracks().forEach(t => t.stop()); } catch {} }); streams = []; if (ac) { try { ac.close(); } catch {} ac = null; } }
+
+function pickMime() {
+  for (const m of ["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"])
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m;
+  return "";
+}
+
+$("rec").onclick = async () => {
+  setStatus("");
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+    setStatus("This browser doesn't support screen recording. Use Chrome or Edge.", "err"); return;
+  }
+  try {
+    const display = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true });
+    streams.push(display);
+    let mic = null;
+    try { mic = await navigator.mediaDevices.getUserMedia({ audio: true }); streams.push(mic); } catch {}
+
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    const dest = ac.createMediaStreamDestination();
+    if (display.getAudioTracks().length) ac.createMediaStreamSource(new MediaStream([display.getAudioTracks()[0]])).connect(dest);
+    if (mic && mic.getAudioTracks().length) ac.createMediaStreamSource(new MediaStream([mic.getAudioTracks()[0]])).connect(dest);
+
+    const tracks = [display.getVideoTracks()[0]];
+    const mixed = dest.stream.getAudioTracks()[0];
+    if (mixed) tracks.push(mixed);
+    const combined = new MediaStream(tracks);
+
+    mime = pickMime();
+    recorder = mime ? new MediaRecorder(combined, { mimeType: mime, videoBitsPerSecond: 2500000 }) : new MediaRecorder(combined);
+    chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: mime || "video/webm" });
+      cleanup();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+      a.href = url; a.download = "roleplay_test_" + stamp + ".webm";
+      document.body.appendChild(a); a.click(); a.remove();
+      const v = $("playback"); v.src = url; v.style.display = "block";
+      setStatus("Saved to Downloads (" + Math.round(blob.size/1024) + " KB) and playing below. It works. ✓", "ok");
+      $("badge").style.display = "none"; $("rec").disabled = false; $("stop").disabled = true;
+    };
+    display.getVideoTracks()[0].addEventListener("ended", () => { if (recorder && recorder.state !== "inactive") recorder.stop(); });
+
+    recorder.start(1000);
+    $("badge").style.display = "inline-flex"; $("rec").disabled = true; $("stop").disabled = false;
+    setStatus("Recording… speak or play audio, then Stop & Save.");
+  } catch (e) {
+    cleanup();
+    setStatus(e && e.name === "NotAllowedError" ? "Screen share cancelled." : "Couldn't start: " + (e && e.message), "err");
+  }
+};
+
+$("stop").onclick = () => { if (recorder && recorder.state !== "inactive") recorder.stop(); };
+</script>
+</body>
+</html>

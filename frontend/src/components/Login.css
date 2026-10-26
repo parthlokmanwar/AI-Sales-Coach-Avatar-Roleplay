@@ -1,0 +1,607 @@
+/* ============================================================================
+   Posiview Edge — Sign In
+   Theme: HDFC red + navy blue.
+     navy   #0A1628  (deep brand base)
+     red    #E31837  (accent)
+   Enterprise split-panel layout · glassmorphism · subtle motion.
+   All selectors are namespaced `.pvl-` so they never collide with the app.
+   ============================================================================ */
+
+/* ── Border beam — @property lets us animate the conic-gradient angle ─────── */
+@property --pvl-beam {
+  syntax: '<angle>';
+  initial-value: -45deg;
+  inherits: false;
+}
+
+/* Wrapper that provides the animated border ring */
+.pvl-card-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 988px;
+  border-radius: 28px;
+  padding: 4px;
+}
+
+/* Moving beam — visible ONLY in the border ring via mask */
+.pvl-card-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  padding: 4px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--pvl-beam),
+    transparent          0deg,
+    transparent          340deg,
+    rgba(255, 85,  112, 0.40) 345deg,
+    rgba(255, 100, 100, 0.90) 350deg,
+    rgba(255, 200, 180, 1.00) 354deg,
+    #ffffff              356deg,
+    rgba(255, 200, 180, 1.00) 358deg,
+    rgba(255, 100, 100, 0.90) 362deg,
+    rgba(255, 85,  112, 0.40) 367deg,
+    transparent          372deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  filter: blur(0.6px);
+  animation: pvlBeamRun 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards;
+}
+
+/* Static glow border — also masked to border ring only */
+.pvl-card-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  padding: 4px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 85,  112, 1.00) 0%,
+    rgba(227, 24,  55,  0.70) 20%,
+    rgba(227, 24,  55,  0.35) 50%,
+    rgba(227, 24,  55,  0.70) 80%,
+    rgba(255, 85,  112, 1.00) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  opacity: 0;
+  animation: pvlGlowIn 0.7s ease-out 2.8s forwards;
+}
+
+@keyframes pvlBeamRun {
+  0%   { --pvl-beam: -45deg;  opacity: 1; }
+  90%  { --pvl-beam: 279deg;  opacity: 1; }
+  100% { --pvl-beam: 315deg;  opacity: 0; }
+}
+
+@keyframes pvlGlowIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pvl-root {
+  --pvl-navy:        #0a1628;
+  --pvl-navy-deep:   #06101f;
+  --pvl-navy-soft:   #1d2c44;
+  --pvl-red:         #e31837;
+  --pvl-red-deep:    #c4142f;
+  --pvl-red-light:   #ff5570;
+  --pvl-ink:         #0f172a;
+  --pvl-muted:       #475569;
+  --pvl-faint:       #8195ac;
+  --pvl-line:        rgba(15, 23, 42, 0.10);
+  --pvl-danger:      #dc2626;
+  --pvl-danger-bg:   #fef2f2;
+
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--pvl-ink);
+  overflow: auto;
+
+  background:
+    radial-gradient(48% 55% at 12% 16%, rgba(227, 24, 55, 0.16) 0%, transparent 60%),
+    radial-gradient(46% 52% at 88% 18%, rgba(10, 22, 40, 0.26) 0%, transparent 58%),
+    radial-gradient(50% 55% at 82% 88%, rgba(227, 24, 55, 0.12) 0%, transparent 60%),
+    radial-gradient(50% 60% at 16% 86%, rgba(10, 22, 40, 0.20) 0%, transparent 60%),
+    #eef2f7;
+}
+
+.pvl-root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(10, 22, 40, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 22, 40, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 78%);
+  pointer-events: none;
+}
+
+/* ── Card shell ───────────────────────────────────────────────────────────── */
+.pvl-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  width: 100%;
+  max-width: 980px;
+  min-height: 580px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: none;
+  border-radius: 26px;
+  box-shadow:
+    0 30px 70px rgba(10, 22, 40, 0.30),
+    0 8px 22px rgba(10, 22, 40, 0.14);
+  overflow: hidden;
+  animation: pvlRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pvlRise {
+  from { opacity: 0; transform: translateY(22px) scale(0.985); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+/* ── Brand panel (left) ───────────────────────────────────────────────────── */
+.pvl-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 46px 44px;
+  color: #fff;
+  overflow: hidden;
+  background:
+    linear-gradient(150deg, var(--pvl-navy-deep) 0%, var(--pvl-navy) 52%, var(--pvl-navy-soft) 100%);
+}
+
+/* glowing red echo of the brand mark */
+.pvl-brand::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  bottom: -120px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(227, 24, 55, 0.55) 0%, transparent 70%);
+  filter: blur(8px);
+  opacity: 0.7;
+}
+.pvl-brand::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  left: -90px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(227, 24, 55, 0.16) 0%, transparent 70%);
+}
+
+.pvl-brand-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.pvl-brand-logo img { height: 36px; display: block; border-radius: 6px; }
+
+.pvl-brand-body { position: relative; margin-top: 28px; }
+
+.pvl-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pvl-red-light);
+  margin-bottom: 14px;
+}
+
+.pvl-brand-title {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.pvl-brand-title span { color: var(--pvl-red-light); }
+
+.pvl-brand-sub {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #fff;
+  max-width: 34ch;
+  margin-bottom: 26px;
+  padding: 10px 14px;
+  background: rgba(255, 85, 112, 0.12);
+  border-left: 3px solid var(--pvl-red-light);
+  border-radius: 0 8px 8px 0;
+  text-shadow: 0 0 18px rgba(255, 85, 112, 0.45);
+}
+
+.pvl-tagline {
+  position: relative;
+  align-self: flex-start;
+  margin-bottom: 26px;
+  padding: 12px 20px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  color: #fff;
+  background: linear-gradient(100deg, rgba(227, 24, 55, 0.20) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-left: 3px solid var(--pvl-red);
+  border-radius: 12px;
+}
+.pvl-tagline-ghost { visibility: hidden; white-space: nowrap; }
+.pvl-tagline-typed {
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  right: 20px;
+  white-space: nowrap;
+}
+.pvl-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -2px;
+  background: var(--pvl-red-light);
+  border-radius: 1px;
+  animation: pvlBlink 1s steps(1) infinite;
+}
+@keyframes pvlBlink {
+  0%, 50%      { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.pvl-features { display: flex; flex-direction: column; gap: 13px; }
+.pvl-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+.pvl-feature-ic {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(227, 24, 55, 0.18);
+  color: var(--pvl-red-light);
+  border: 1px solid rgba(227, 24, 55, 0.32);
+}
+
+.pvl-brand-foot {
+  position: relative;
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Form panel (right) ───────────────────────────────────────────────────── */
+.pvl-form-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 52px;
+}
+
+.pvl-form-logo { display: none; margin-bottom: 26px; background: #0a1628; border-radius: 10px; padding: 10px 16px; align-self: flex-start; }
+.pvl-form-logo img { height: 30px; display: block; }
+
+/* Back-to-home link (only rendered when the demo landing page is enabled) */
+.pvl-back {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pvl-muted);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--pvl-line);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, transform 0.15s;
+}
+.pvl-back:hover { color: var(--pvl-red); border-color: rgba(227, 24, 55, 0.3); transform: translateX(-2px); }
+
+.pvl-h {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.pvl-h-sub {
+  font-size: 13.5px;
+  color: var(--pvl-muted);
+  margin-bottom: 28px;
+}
+
+.pvl-field { margin-bottom: 16px; }
+.pvl-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pvl-ink);
+  margin-bottom: 7px;
+}
+
+.pvl-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pvl-input-ic {
+  position: absolute;
+  left: 14px;
+  color: var(--pvl-faint);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pvl-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px 0 42px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--pvl-ink);
+  background: #fff;
+  border: 1.5px solid var(--pvl-line);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+.pvl-input::placeholder { color: var(--pvl-faint); }
+.pvl-input:hover { border-color: rgba(15, 23, 42, 0.2); }
+.pvl-input:focus {
+  border-color: var(--pvl-red);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(227, 24, 55, 0.15);
+}
+.pvl-input.has-toggle { padding-right: 46px; }
+
+.pvl-toggle {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--pvl-faint);
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+.pvl-toggle:hover { color: var(--pvl-red); background: rgba(227, 24, 55, 0.08); }
+
+.pvl-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pvl-danger);
+  background: var(--pvl-danger-bg);
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  border-radius: 11px;
+  animation: pvlShake 0.4s ease;
+}
+@keyframes pvlShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.pvl-submit {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(120deg, var(--pvl-navy) 0%, var(--pvl-navy-soft) 48%, var(--pvl-red) 130%);
+  box-shadow: 0 10px 26px rgba(227, 24, 55, 0.30);
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+}
+.pvl-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(227, 24, 55, 0.42);
+  filter: brightness(1.06);
+}
+.pvl-submit:active:not(:disabled) { transform: translateY(0); }
+.pvl-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.pvl-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: pvlSpin 0.7s linear infinite;
+}
+@keyframes pvlSpin { to { transform: rotate(360deg); } }
+
+.pvl-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--pvl-faint);
+}
+.pvl-foot svg { color: var(--pvl-red); }
+
+.pvl-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--pvl-faint);
+  transition: color 0.18s;
+}
+.pvl-link:hover { color: var(--pvl-red); }
+.pvl-link svg { transition: transform 0.18s; }
+.pvl-link:hover svg { transform: translate(2px, -2px); }
+
+/* ============================================================================
+   MOTION — staggered entrance reveal + ambient micro-interactions
+   ============================================================================ */
+@keyframes pvlFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Brand column cascade */
+.pvl-brand-logo,
+.pvl-eyebrow,
+.pvl-brand-title,
+.pvl-tagline,
+.pvl-feature,
+.pvl-brand-foot,
+/* Form column cascade */
+.pvl-h,
+.pvl-h-sub,
+.pvl-field,
+.pvl-submit,
+.pvl-foot,
+.pvl-link {
+  opacity: 0;
+  animation: pvlFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.pvl-brand-logo  { animation-delay: 0.12s; }
+.pvl-eyebrow     { animation-delay: 0.30s; }
+.pvl-brand-title { animation-delay: 0.38s; }
+.pvl-tagline     { animation-delay: 0.46s; }
+.pvl-feature:nth-child(1) { animation-delay: 0.56s; }
+.pvl-feature:nth-child(2) { animation-delay: 0.64s; }
+.pvl-feature:nth-child(3) { animation-delay: 0.72s; }
+.pvl-brand-foot  { animation-delay: 0.82s; }
+
+.pvl-h     { animation-delay: 0.18s; }
+.pvl-h-sub { animation-delay: 0.26s; }
+.pvl-field:nth-of-type(1) { animation-delay: 0.34s; }
+.pvl-field:nth-of-type(2) { animation-delay: 0.42s; }
+.pvl-submit { animation-delay: 0.52s; }
+.pvl-foot  { animation-delay: 0.62s; }
+.pvl-link  { animation-delay: 0.70s; }
+
+/* Breathing red glow on the brand panel */
+.pvl-brand::after { animation: pvlGlow 7s ease-in-out infinite; }
+@keyframes pvlGlow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.12); }
+}
+
+/* Sheen sweep across the Sign in button on hover */
+.pvl-submit { overflow: hidden; }
+.pvl-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 32%, rgba(255, 255, 255, 0.30) 50%, transparent 68%);
+  transform: translateX(-130%);
+  transition: transform 0.7s var(--ease, ease);
+  pointer-events: none;
+}
+.pvl-submit:hover:not(:disabled)::after { transform: translateX(130%); }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pvl-card,
+  .pvl-brand-logo, .pvl-eyebrow, .pvl-brand-title, .pvl-tagline,
+  .pvl-feature, .pvl-brand-foot,
+  .pvl-h, .pvl-h-sub, .pvl-field, .pvl-submit, .pvl-foot, .pvl-link {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .pvl-brand::after { animation: none !important; }
+  .pvl-submit::after { transition: none !important; }
+  .pvl-caret { animation: none !important; opacity: 0 !important; }
+}
+
+/* ── Typewriter cursor ────────────────────────────────────────────────────── */
+.pvl-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.82em;
+  border-radius: 1px;
+  background: rgba(255, 120, 140, 0.9);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: pvlCursorBlink 0.72s steps(1, start) infinite;
+}
+@keyframes pvlCursorBlink {
+  0%, 49.9% { opacity: 1; }
+  50%, 100%  { opacity: 0; }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 840px) {
+  .pvl-card { grid-template-columns: 1fr; max-width: 440px; min-height: 0; }
+  .pvl-brand { display: none; }
+  .pvl-form-wrap { padding: 40px 32px; }
+  .pvl-form-logo { display: block; }
+}
+
+@media (max-width: 420px) {
+  .pvl-root { padding: 14px; }
+  .pvl-form-wrap { padding: 32px 22px; }
+}

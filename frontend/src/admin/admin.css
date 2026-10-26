@@ -1,0 +1,240 @@
+/* ============================================================================
+   Admin / Super Admin consoles — red + navy enterprise theme.
+   Namespaced `.av-` (admin view) to avoid colliding with the agent app styles.
+   ============================================================================ */
+.av-root {
+  --av-navy: #0a1628;
+  --av-navy-soft: #1d2c44;
+  --av-red: #e31837;
+  --av-red-deep: #c4142f;
+  --av-ink: #0f172a;
+  --av-muted: #5b6479;
+  --av-faint: #8195ac;
+  --av-line: rgba(15, 23, 42, 0.10);
+  --av-bg: #f4f6fb;
+  --av-card: #ffffff;
+}
+
+/* ── Page scaffold ───────────────────────────────────────────────────────── */
+.av-page { animation: avFade 0.35s ease; }
+@keyframes avFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.av-page-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 22px; flex-wrap: wrap;
+}
+.av-page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--av-ink); }
+.av-page-sub { font-size: 13px; color: var(--av-muted); margin-top: 2px; }
+.av-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* ── Stat cards ──────────────────────────────────────────────────────────── */
+.av-stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px; margin-bottom: 26px;
+}
+.av-stat {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--av-card); border: 1px solid var(--av-line);
+  border-radius: 16px; padding: 18px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+.av-stat-ic {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  color: #fff; background: linear-gradient(135deg, var(--av-navy-soft), var(--av-navy));
+  flex-shrink: 0;
+}
+.av-stat-value { font-size: 24px; font-weight: 800; color: var(--av-ink); line-height: 1.1; }
+.av-stat-label { font-size: 12px; color: var(--av-muted); margin-top: 3px; }
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.av-card {
+  background: var(--av-card); border: 1px solid var(--av-line);
+  border-radius: 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); overflow: hidden;
+}
+.av-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--av-line); flex-wrap: wrap;
+}
+.av-card-title { font-size: 14px; font-weight: 700; color: var(--av-ink); }
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.av-table-wrap { overflow-x: auto; }
+.av-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.av-table th {
+  text-align: left; padding: 11px 18px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; color: var(--av-faint);
+  border-bottom: 1px solid var(--av-line); background: #fafbfe; white-space: nowrap;
+}
+.av-table td { padding: 13px 18px; border-bottom: 1px solid var(--av-line); color: var(--av-ink); vertical-align: middle; }
+.av-table tr:last-child td { border-bottom: none; }
+.av-table tbody tr:hover { background: #fafbff; }
+.av-table-msg { text-align: center; color: var(--av-muted); padding: 36px !important; }
+.av-cell-strong { font-weight: 600; }
+.av-cell-sub { font-size: 12px; color: var(--av-faint); }
+.av-mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+/* ── Badge ───────────────────────────────────────────────────────────────── */
+.av-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: capitalize;
+}
+.av-badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+.av-badge.ok { background: rgba(16, 185, 129, 0.12); color: #047857; }
+.av-badge.ok .dot { background: #10b981; }
+.av-badge.warn { background: rgba(245, 158, 11, 0.14); color: #b45309; }
+.av-badge.warn .dot { background: #f59e0b; }
+.av-badge.off { background: rgba(100, 116, 139, 0.14); color: #475569; }
+.av-badge.off .dot { background: #94a3b8; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.av-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 15px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  font-family: inherit; border: 1px solid transparent; cursor: pointer;
+  transition: filter 0.15s, background 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.av-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.av-btn.primary { background: linear-gradient(120deg, var(--av-navy), var(--av-red) 170%); color: #fff; box-shadow: 0 6px 16px rgba(227, 24, 55, 0.22); }
+.av-btn.primary:hover:not(:disabled) { filter: brightness(1.07); }
+.av-btn.secondary { background: #fff; border-color: var(--av-line); color: var(--av-ink); }
+.av-btn.secondary:hover:not(:disabled) { background: #f8fafc; border-color: rgba(15,23,42,0.2); }
+.av-btn.danger { background: #fff; border-color: rgba(227, 24, 55, 0.3); color: var(--av-red-deep); }
+.av-btn.danger:hover:not(:disabled) { background: var(--av-red); color: #fff; border-color: var(--av-red); }
+.av-btn.ghost { background: transparent; border-color: var(--av-line); color: var(--av-muted); padding: 7px 12px; font-size: 12px; }
+.av-btn.ghost:hover:not(:disabled) { color: var(--av-ink); background: #f1f5f9; }
+.av-btn.sm { padding: 6px 10px; font-size: 12px; }
+
+.av-row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.av-icon-btn {
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--av-line); background: #fff; color: var(--av-muted); cursor: pointer;
+  transition: all 0.15s;
+}
+.av-icon-btn:hover { color: var(--av-ink); background: #f1f5f9; }
+.av-icon-btn.danger:hover { color: #fff; background: var(--av-red); border-color: var(--av-red); }
+
+/* ── Search ──────────────────────────────────────────────────────────────── */
+.av-search {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: #fff; border: 1px solid var(--av-line); border-radius: 10px; color: var(--av-faint);
+  min-width: 220px;
+}
+.av-search input { border: none; outline: none; font-family: inherit; font-size: 13px; width: 100%; color: var(--av-ink); background: transparent; }
+
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+.av-pager { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 18px; font-size: 12px; color: var(--av-muted); }
+.av-pager button { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--av-line); background: #fff; cursor: pointer; color: var(--av-ink); }
+.av-pager button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Modal ───────────────────────────────────────────────────────────────── */
+.av-modal-overlay {
+  position: fixed; inset: 0; background: rgba(10, 22, 40, 0.55); backdrop-filter: blur(3px);
+  z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;
+  animation: avFade 0.2s ease;
+}
+.av-modal {
+  width: 100%; background: #fff; border-radius: 18px; overflow: hidden;
+  box-shadow: 0 30px 70px rgba(10, 22, 40, 0.35); animation: avPop 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes avPop { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+.av-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--av-line); }
+.av-modal-head h3 { font-size: 16px; font-weight: 700; color: var(--av-ink); }
+.av-modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+.av-modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--av-line); background: #fafbfe; }
+
+/* ── Fields ──────────────────────────────────────────────────────────────── */
+.av-field { display: block; margin-bottom: 16px; }
+.av-field-label { display: block; font-size: 12px; font-weight: 600; color: var(--av-ink); margin-bottom: 6px; }
+.av-field-hint { display: block; font-size: 11px; color: var(--av-faint); margin-top: 5px; }
+.av-input, .av-select {
+  width: 100%; height: 42px; padding: 0 12px; font-size: 13px; font-family: inherit;
+  color: var(--av-ink); background: #fff; border: 1.5px solid var(--av-line); border-radius: 10px; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.av-input:focus, .av-select:focus { border-color: var(--av-red); box-shadow: 0 0 0 3px rgba(227, 24, 55, 0.12); }
+
+/* ── Creds box ───────────────────────────────────────────────────────────── */
+.av-creds {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: #f0fdf4; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px 16px;
+}
+.av-creds-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.av-creds-row span { color: var(--av-muted); min-width: 92px; }
+.av-creds-row code { font-family: ui-monospace, Menlo, monospace; font-weight: 600; color: var(--av-ink); }
+
+/* ── Audit feed ──────────────────────────────────────────────────────────── */
+.av-audit-action { font-family: ui-monospace, Menlo, monospace; font-size: 12px; font-weight: 600; color: var(--av-navy-soft); }
+
+/* ── Dropzone ────────────────────────────────────────────────────────────── */
+.av-drop {
+  border: 2px dashed var(--av-line); border-radius: 14px; padding: 30px; text-align: center;
+  color: var(--av-muted); cursor: pointer; transition: all 0.15s; background: #fafbfe;
+}
+.av-drop:hover, .av-drop.drag { border-color: var(--av-red); background: rgba(227, 24, 55, 0.04); color: var(--av-ink); }
+.av-drop strong { color: var(--av-red-deep); }
+
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+.av-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 9px; padding: 12px 18px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; color: #fff; z-index: 3000; box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  animation: avToast 0.25s ease;
+}
+@keyframes avToast { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translateX(-50%); } }
+.av-toast.success { background: #059669; }
+.av-toast.error { background: var(--av-red-deep); }
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+.av-spinner { display: inline-block; border: 2.5px solid rgba(15,23,42,0.15); border-top-color: var(--av-red); border-radius: 50%; animation: avSpin 0.7s linear infinite; vertical-align: middle; }
+@keyframes avSpin { to { transform: rotate(360deg); } }
+
+/* ── Empty / section ─────────────────────────────────────────────────────── */
+.av-section { margin-bottom: 26px; }
+
+/* ── Activity chart ──────────────────────────────────────────────────────── */
+.av-chart { display: flex; align-items: flex-end; gap: 6px; height: 170px; padding: 8px 4px 0; }
+.av-chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.av-chart-bar { width: 100%; max-width: 26px; height: 140px; display: flex; flex-direction: column; justify-content: flex-end; border-radius: 6px; overflow: hidden; background: #f1f5f9; }
+.av-chart-bar .seg { width: 100%; transition: height 0.4s cubic-bezier(0.16,1,0.3,1); }
+.av-chart-bar .seg.pitches { background: var(--av-red); }
+.av-chart-bar .seg.chats { background: #2563eb; }
+.av-chart-x { font-size: 10px; color: var(--av-faint); white-space: nowrap; }
+.av-legend { display: flex; gap: 18px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--av-muted); }
+.av-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.av-legend .dot { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+.av-legend .dot.pitches { background: var(--av-red); }
+.av-legend .dot.chats { background: #2563eb; }
+
+/* ── Mini bar (table cell) ───────────────────────────────────────────────── */
+.av-minibar { width: 90px; height: 7px; border-radius: 999px; background: #eef1f6; overflow: hidden; }
+.av-minibar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--av-navy-soft), var(--av-red)); }
+
+/* ── Mobile (≤640px) ─────────────────────────────────────────────────────────
+   The console reuses the agent app shell (.topbar/.sidebar/.main), so it already
+   inherits the phone bottom-tab-bar layout from index.css. These rules tidy the
+   admin-specific content: full-width toolbars, no toast under the tab bar, and
+   stacked cred/action rows. */
+@media (max-width: 640px) {
+  .av-page-head  { gap: 10px; margin-bottom: 16px; }
+  .av-page-title { font-size: 19px; }
+  .av-page-sub   { font-size: 12px; }
+
+  /* Toolbars + search take the full width and stop forcing horizontal overflow. */
+  .av-toolbar { width: 100%; }
+  .av-toolbar > .av-btn { flex: 1; }
+  .av-search  { min-width: 0; flex: 1 1 100%; }
+
+  /* Stat grid to a single column so 200px-min cards never overflow 320px screens. */
+  .av-stats-grid { grid-template-columns: 1fr; }
+
+  /* Generated-credentials box and row actions wrap instead of squeezing. */
+  .av-creds       { flex-direction: column; align-items: stretch; gap: 10px; }
+  .av-row-actions { flex-wrap: wrap; justify-content: flex-start; }
+
+  /* Toast must clear the fixed bottom tab bar (index.css sets --bottom-nav-h). */
+  .av-toast {
+    left: 12px; right: 12px; bottom: calc(var(--bottom-nav-h, 66px) + 12px);
+    transform: none; animation: avFade 0.25s ease;
+    justify-content: center;
+  }
+}

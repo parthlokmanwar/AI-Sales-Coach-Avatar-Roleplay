@@ -1,0 +1,114 @@
+HDFC BANK — 10-SECOND LOAN APPROVED PITCH FRAMEWORK
+Source: Sales Transformation Unit
+Audience: HDFC Bank telecalling agents and Relationship Managers
+Use: Approved telecalling script for pre-approved Personal Loan and Business Loan offers delivered via the 10-Second Expressway link.
+
+==============================================================
+SECTION 1 — APPROVED LOAN PRODUCT REFERENCE DATA
+==============================================================
+
+PERSONAL LOAN (PL) — 10 Second Loan
+- Pre-approved amount: up to Rs. 10 lakh (use the actual amount when given on the customer record).
+- EMI: Rs. 2,169 per lakh.
+- Maximum tenure: 84 months. This is the highest tenure offered versus any other bank.
+- Loan type: Unsecured — no security, no collateral, no documents required.
+- Disbursal: 10 seconds via the HDFC Expressway link.
+- Login method: Registered mobile number + Date of Birth.
+- Offer type: Limited period offer generated on the customer's Customer ID.
+
+BUSINESS LOAN (BL) — 10 Second Loan
+- Pre-approved amount: up to Rs. 5 lakh (use the actual amount when given).
+- EMI: Rs. 2,834 per lakh.
+- Maximum tenure: 48 months. This is the highest tenure offered versus any other bank.
+- Loan type: Unsecured — no security, no collateral, no documents required.
+- Disbursal: 10 seconds via the HDFC Expressway link.
+- Login method: Registered mobile number + Email ID.
+- Offer type: Limited period offer generated on the customer's Customer ID.
+
+==============================================================
+SECTION 2 — APPROVED 9-STEP PITCH STRUCTURE FOR 10-SECOND LOAN
+==============================================================
+
+Step 1 — OPENING
+"Good morning/afternoon, sir/ma'am. This is [Agent Name] calling from HDFC Bank Limited."
+
+Step 2 — CONFIRM CUSTOMER
+"Am I talking to Mr./Ms. [Customer Name]?"
+Wait for confirmation before proceeding.
+
+Step 3 — TIME CHECK
+"Sir/Ma'am, is this the right time to speak to you?"
+If yes — continue. If no — offer a callback at the customer's convenience.
+
+Step 4 — OFFER INTRODUCTION
+Mention: existing HDFC customer relationship + pre-approved amount + loan type + 10-second Expressway link.
+
+Step 5 — LIMITED PERIOD URGENCY
+Mention: this offer sits on the customer's Customer ID, is available for a limited period only, and is shown on the 10-second offer page.
+
+Step 6 — PROCESS EXPLANATION
+Walk the customer through: fill a few details → application processed → money instantly credited.
+
+Step 7 — HANDLE OBJECTIONS
+Only if the customer raises an objection — use the approved answers in Section 3.
+
+Step 8 — HOW TO AVAIL
+Send the Expressway link → customer logs in with mobile + DOB (for PL) or mobile + Email (for BL) → sees the offer → fills details → accepts the terms → money credited in 10 seconds.
+
+Step 9 — CLOSE / OFFICE VISIT
+If the customer requests a visit, offer to come over. Ask for a convenient time today, confirm the time politely, and end the call on a positive note.
+
+==============================================================
+SECTION 3 — APPROVED OBJECTION HANDLING ANSWERS
+==============================================================
+
+Q: Do I need to give security or collateral?
+A: "No sir, this is a completely unsecured loan. You do not need to give any security or collateral whatsoever."
+
+Q: Do I need to submit any documents?
+A: "Absolutely not, sir. The best part of this offer is that you don't need to submit any documents at all."
+
+Q: What will my EMI be? (Personal Loan)
+A: "Sir, the EMI would be Rs. 2,169 per lakh, and tenure can go up to 84 months — the highest compared to any other bank."
+
+Q: What will my EMI be? (Business Loan)
+A: "Sir, the EMI would be Rs. 2,834 per lakh, and tenure can go up to 48 months — the highest compared to any other bank."
+
+Q: How do I avail this offer?
+A: Walk the customer through the Expressway link login steps based on the loan type (mobile + DOB for PL, mobile + Email for BL).
+
+Q: I am not interested right now.
+A: "I completely understand, sir. May I ask what your concern is? This is a pre-approved offer on your profile and is available for a limited time only."
+
+Q: Call me later.
+A: "Of course, sir. When would be the best time to call you back — morning or afternoon?"
+
+Q: Can you visit my office?
+A: "Absolutely sir. Please share a convenient time today and I will be there to assist you personally."
+
+==============================================================
+SECTION 4 — COMPLIANCE RULES FOR 10-SECOND LOAN PITCHES
+==============================================================
+
+- Never mention the interest rate. It is not in the approved script.
+- Never mention the processing fee. It is not in the approved script.
+- Never make promises beyond what is in this approved framework.
+- Always end the call on a positive, helpful note.
+- Maintain the HDFC Bank brand tone: trustworthy, warm, professional, conversational Hindi-English.
+- Keep agent lines short and easy to speak aloud.
+- Use [PAUSE] markers where the agent should wait for the customer to respond.
+
+==============================================================
+SECTION 5 — WHEN THIS FRAMEWORK APPLIES
+==============================================================
+
+This framework applies to 10-Second Loan pitches: pre-approved Personal Loans up to Rs. 10 lakh and pre-approved Business Loans up to Rs. 5 lakh, delivered via the Expressway link to existing HDFC customers.
+
+It does NOT apply to:
+- Fresh (non pre-approved) loan applications.
+- Home Loans.
+- Loan Against Property (LAP).
+- Auto loans, education loans, gold loans.
+- Branch-walk-in or document-based applications.
+
+For those scenarios, refer to the relevant HDFC product documents.

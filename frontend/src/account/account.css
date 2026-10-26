@@ -1,0 +1,53 @@
+/* Account modal (profile + change password) — red/navy, namespaced `.acct-`.
+   Full-screen flows (forced reset, token reset) reuse the `.pvl-` login styles. */
+.acct-overlay {
+  position: fixed; inset: 0; z-index: 2500; display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(10, 22, 40, 0.55); backdrop-filter: blur(3px);
+  animation: acctFade 0.2s ease;
+}
+@keyframes acctFade { from { opacity: 0; } to { opacity: 1; } }
+.acct-modal {
+  width: 100%; max-width: 460px; background: #fff; border-radius: 18px; overflow: hidden;
+  box-shadow: 0 30px 70px rgba(10, 22, 40, 0.35);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a; animation: acctPop 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes acctPop { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+.acct-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid rgba(15,23,42,0.1); }
+.acct-head h3 { font-size: 16px; font-weight: 700; }
+.acct-x { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #64748b; cursor: pointer; }
+.acct-x:hover { background: #f1f5f9; color: #0f172a; }
+.acct-body { padding: 20px; max-height: 72vh; overflow-y: auto; }
+
+.acct-id { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.acct-avatar { width: 52px; height: 52px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #1d2c44, #0a1628 55%, #e31837 175%); }
+.acct-id-name { font-size: 16px; font-weight: 700; }
+.acct-id-email { font-size: 13px; color: #5b6479; }
+.acct-role { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c4142f; background: #fdecef; padding: 2px 8px; border-radius: 999px; }
+
+.acct-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #8195ac; margin: 18px 0 10px; }
+.acct-field { margin-bottom: 14px; }
+.acct-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+.acct-input { width: 100%; height: 42px; padding: 0 12px; font-size: 13px; font-family: inherit; color: #0f172a; background: #fff; border: 1.5px solid rgba(15,23,42,0.1); border-radius: 10px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.acct-input:focus { border-color: #e31837; box-shadow: 0 0 0 3px rgba(227,24,55,0.12); }
+.acct-input:disabled { background: #f8fafc; color: #64748b; }
+
+.acct-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.acct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; font-family: inherit; border: 1px solid transparent; cursor: pointer; }
+.acct-btn.primary { background: linear-gradient(120deg, #0a1628, #e31837 175%); color: #fff; }
+.acct-btn.primary:hover:not(:disabled) { filter: brightness(1.07); }
+.acct-btn.secondary { background: #fff; border-color: rgba(15,23,42,0.12); color: #0f172a; }
+.acct-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.acct-msg { display: flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 9px 12px; border-radius: 10px; margin-bottom: 14px; }
+.acct-msg.error { color: #dc2626; background: #fef2f2; border: 1px solid rgba(220,38,38,0.2); }
+.acct-msg.ok { color: #047857; background: #f0fdf4; border: 1px solid rgba(16,185,129,0.25); }
+
+.acct-divider { height: 1px; background: rgba(15,23,42,0.08); margin: 18px 0; }
+
+.spin { animation: acctSpin 0.7s linear infinite; }
+@keyframes acctSpin { to { transform: rotate(360deg); } }
+
+/* Profile launcher button in the topbar (reuses .topbar-signout look) */
+.topbar-profile { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border: none; border-radius: 50%; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); transition: background 0.2s, color 0.2s; cursor: pointer; }
+.topbar-profile:hover { background: rgba(255,255,255,0.16); color: #fff; }
